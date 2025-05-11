@@ -1,24 +1,11 @@
-
-
 import type { CustomTask } from "../_lib/custom-data";
 import type { DataTableRowAction } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { AlertCircle, CheckCircle2, Clock, Ellipsis, Icon, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import * as React from "react";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/utils";
 
 interface GetColumnsProps {
   setRowAction?: React.Dispatch<
@@ -56,9 +43,11 @@ export function getPriorityIcon(priority: CustomTask["priority"]) {
 }
 
 const getData = (data: CustomTask) => {
-  const keys = Object.keys(data).filter(key => key !== "__typename");
-  return keys.map(key => {
-    const title = key.replace(/_/g, ' ').charAt(0).toUpperCase() + key.replace(/_/g, ' ').slice(1);
+  const keys = Object.keys(data).filter((key) => key !== "__typename");
+  return keys.map((key) => {
+    const title =
+      key.replace(/_/g, " ").charAt(0).toUpperCase() +
+      key.replace(/_/g, " ").slice(1);
     return {
       accessorKey: key,
       header: ({ column }: { column: any }) => (
@@ -78,17 +67,19 @@ const getData = (data: CustomTask) => {
 };
 
 export function getCustomColumns({
-  setRowAction,
   data,
-}: GetColumnsProps): ColumnDef<CustomTask>[] {
+}: Omit<GetColumnsProps, "setRowAction">): ColumnDef<CustomTask>[] {
   return [
     {
       id: "select",
       header: ({ table }) => (
         <Checkbox
           checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            table.getIsAllPageRowsSelected()
+              ? true
+              : table.getIsSomePageRowsSelected()
+              ? "indeterminate"
+              : false
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -150,4 +141,4 @@ export function getCustomColumns({
     //   size: 40,
     // },
   ];
-} 
+}

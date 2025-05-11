@@ -1,16 +1,16 @@
-import { Pickaxe } from "lucide-react";
+import { FilterIcon } from "lucide-react";
 
 export type DataTableConfig = typeof dataTableConfig;
 
 export const dataTableConfig = {
   featureFlags: [
-    // {
-    //   label: "Advanced table",
-    //   value: "advancedTable" as const,
-    //   icon: Pickaxe,
-    //   tooltipTitle: "Toggle advanced table",
-    //   tooltipDescription: "A filter and sort builder to filter and sort rows.",
-    // }
+    {
+      label: "Advanced table",
+      value: "advancedTable" as const,
+      icon: FilterIcon,
+      tooltipTitle: "Toggle advanced table",
+      tooltipDescription: "A filter and sort builder to filter and sort rows.",
+    },
   ],
   textOperators: [
     { label: "Contains", value: "iLike" as const },

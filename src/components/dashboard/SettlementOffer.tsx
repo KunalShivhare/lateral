@@ -1,5 +1,3 @@
-import * as React from "react";
-
 const discountOptions = [
   { value: -10, label: "-10%" },
   { value: -20, label: "-20%" },

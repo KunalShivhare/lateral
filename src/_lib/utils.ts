@@ -8,14 +8,15 @@ import {
   CircleX,
   Timer,
 } from "lucide-react";
-import { CustomTask } from "./custom-data";
 
 /**
  * Returns the appropriate status icon based on the provided status.
  * @param status - The status of the task.
  * @returns A React component representing the status icon.
  */
-export function getStatusIcon(status: CustomTask["status"]) {
+export function getStatusIcon(
+  status: "pending" | "in-progress" | "completed" | "canceled" | undefined
+) {
   const statusIcons = {
     canceled: CircleX,
     completed: CheckCircle2,
@@ -23,7 +24,7 @@ export function getStatusIcon(status: CustomTask["status"]) {
     pending: CircleHelp,
   };
 
-  return statusIcons[status] || CircleIcon;
+  return statusIcons[status as keyof typeof statusIcons] || CircleIcon;
 }
 
 /**
@@ -31,12 +32,14 @@ export function getStatusIcon(status: CustomTask["status"]) {
  * @param priority - The priority of the task.
  * @returns A React component representing the priority icon.
  */
-export function getPriorityIcon(priority: CustomTask["priority"]) {
+export function getPriorityIcon(
+  priority: "low" | "medium" | "high" | undefined
+) {
   const priorityIcons = {
     high: ArrowUpIcon,
     low: ArrowDownIcon,
     medium: ArrowRightIcon,
   };
 
-  return priorityIcons[priority] || CircleIcon;
+  return priorityIcons[priority as keyof typeof priorityIcons] || CircleIcon;
 }

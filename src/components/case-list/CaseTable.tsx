@@ -316,8 +316,6 @@ const TableActionButtons = () => {
 export function CaseTable() {
   const navigate = useNavigate();
   const { searchQuery } = useSearch();
-  const [selectAll, setSelectAll] = React.useState(false);
-  const [selectedCases, setSelectedCases] = React.useState<string[]>([]);
 
   // Filter cases based on search query
   const filteredCases = React.useMemo(() => {

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { PageLayout } from "../layout/PageLayout";
 
 export function Invoices() {

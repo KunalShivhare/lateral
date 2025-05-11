@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 interface SearchContextProps {
   searchQuery: string;
