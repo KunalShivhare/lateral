@@ -139,6 +139,8 @@
 .blur-box {
   backdrop-filter: blur(43px);
   -webkit-backdrop-filter: blur(43px);
+  background-color: rgba(0, 0, 0, 0.01);
+  transform: translateZ(0);
 }
 
 /* Hide scrollbar for different browsers */
