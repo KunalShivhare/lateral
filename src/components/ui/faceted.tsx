@@ -57,7 +57,7 @@ interface FacetedContextValue<Multiple extends boolean = boolean> {
 }
 
 const FacetedContext = React.createContext<FacetedContextValue<boolean> | null>(
-  null,
+  null
 );
 
 function useFacetedContext(name: keyof typeof ERRORS) {
@@ -77,7 +77,7 @@ interface FacetedProps<Multiple extends boolean = false>
 }
 
 function Faceted<Multiple extends boolean = false>(
-  props: FacetedProps<Multiple>,
+  props: FacetedProps<Multiple>
 ) {
   const {
     value,
@@ -110,12 +110,12 @@ function Faceted<Multiple extends boolean = false>(
         });
       }
     },
-    [multiple, onValueChange, value],
+    [multiple, onValueChange, value]
   );
 
   const contextValue = React.useMemo<FacetedContextValue<Multiple>>(
     () => ({ value, onItemSelect, multiple, triggerRef }),
-    [value, onItemSelect, multiple],
+    [value, onItemSelect, multiple]
   );
 
   return (
@@ -143,7 +143,7 @@ const FacetedTrigger = React.forwardRef<
       ref={composedRef}
       className={cn(
         "justify-between text-left focus:outline-none focus:ring-1 focus:ring-ring",
-        className,
+        className
       )}
       onPointerDown={composeEventHandlers(
         triggerProps.onPointerDown,
@@ -165,7 +165,7 @@ const FacetedTrigger = React.forwardRef<
           ) {
             event.preventDefault();
           }
-        },
+        }
       )}
     >
       {children}
@@ -204,7 +204,7 @@ const FacetedBadgeList = React.forwardRef<
       const option = options.find((opt) => opt.value === value);
       return option?.label ?? value;
     },
-    [options],
+    [options]
   );
 
   if (!values || values.length === 0) {
@@ -264,11 +264,11 @@ const FacetedContent = React.forwardRef<
       align="start"
       className={cn(
         "w-[200px] origin-(--radix-popover-content-transform-origin) p-0",
-        className,
+        className
       )}
       onCloseAutoFocus={composeEventHandlers(
         contentProps.onCloseAutoFocus,
-        () => context.triggerRef.current?.focus({ preventScroll: true }),
+        () => context.triggerRef.current?.focus({ preventScroll: true })
       )}
     >
       <Command>{children}</Command>
@@ -277,16 +277,28 @@ const FacetedContent = React.forwardRef<
 });
 FacetedContent.displayName = CONTENT_NAME;
 
-const FacetedInput = CommandInput;
+const FacetedInput = React.forwardRef<
+  React.ComponentRef<typeof CommandInput>,
+  React.ComponentPropsWithoutRef<typeof CommandInput>
+>((props, ref) => <CommandInput {...props} ref={ref} />);
 FacetedInput.displayName = INPUT_NAME;
 
-const FacetedList = CommandList;
+const FacetedList = React.forwardRef<
+  React.ComponentRef<typeof CommandList>,
+  React.ComponentPropsWithoutRef<typeof CommandList>
+>((props, ref) => <CommandList {...props} ref={ref} />);
 FacetedList.displayName = LIST_NAME;
 
-const FacetedEmpty = CommandEmpty;
+const FacetedEmpty = React.forwardRef<
+  React.ComponentRef<typeof CommandEmpty>,
+  React.ComponentPropsWithoutRef<typeof CommandEmpty>
+>((props, ref) => <CommandEmpty {...props} ref={ref} />);
 FacetedEmpty.displayName = EMPTY_NAME;
 
-const FacetedGroup = CommandGroup;
+const FacetedGroup = React.forwardRef<
+  React.ComponentRef<typeof CommandGroup>,
+  React.ComponentPropsWithoutRef<typeof CommandGroup>
+>((props, ref) => <CommandGroup {...props} ref={ref} />);
 FacetedGroup.displayName = GROUP_NAME;
 
 interface FacetedItemProps
@@ -313,7 +325,7 @@ const FacetedItem = React.forwardRef<
         context.onItemSelect(currentValue);
       }
     },
-    [onSelect, context.onItemSelect],
+    [onSelect, context]
   );
 
   return (
@@ -330,7 +342,7 @@ const FacetedItem = React.forwardRef<
           "flex size-4 items-center justify-center rounded-sm border border-primary",
           isSelected
             ? "bg-primary text-primary-foreground"
-            : "opacity-50 [&_svg]:invisible",
+            : "opacity-50 [&_svg]:invisible"
         )}
       >
         <Check className="size-4" />
@@ -341,7 +353,10 @@ const FacetedItem = React.forwardRef<
 });
 FacetedItem.displayName = ITEM_NAME;
 
-const FacetedSeparator = CommandSeparator;
+const FacetedSeparator = React.forwardRef<
+  React.ComponentRef<typeof CommandSeparator>,
+  React.ComponentPropsWithoutRef<typeof CommandSeparator>
+>((props, ref) => <CommandSeparator {...props} ref={ref} />);
 FacetedSeparator.displayName = SEPARATOR_NAME;
 
 export {

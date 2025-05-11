@@ -94,14 +94,14 @@ export function DataTableFilterList<TData>({
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
-  
+
   // Handle internal open state if not provided
   const [internalOpen, setInternalOpen] = React.useState(false);
-  
+
   // Use external state if provided, otherwise use internal state
   const isOpen = open !== undefined ? open : internalOpen;
   const setIsOpen = setOpen ?? setInternalOpen;
-  
+
   // Use custom filters if provided, otherwise use URL filters
   const [urlFilters, setUrlFilters] = useQueryState(
     "filters",
@@ -110,17 +110,16 @@ export function DataTableFilterList<TData>({
       .withOptions({
         clearOnDefault: true,
         shallow,
-      }),
+      })
   );
-  
+
   // Use custom filters if provided, otherwise use URL filters
   const filters = customFilters !== undefined ? customFilters : urlFilters;
-  
+
   // Use custom filter change handler if provided, otherwise use URL filter setter
-  const setFilters = onFiltersChange !== undefined 
-    ? onFiltersChange 
-    : setUrlFilters;
-  
+  const setFilters: any =
+    onFiltersChange !== undefined ? onFiltersChange : setUrlFilters;
+
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
   const [joinOperator, setJoinOperator] = useQueryState(
@@ -128,7 +127,7 @@ export function DataTableFilterList<TData>({
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
       clearOnDefault: true,
       shallow,
-    }),
+    })
   );
 
   const onFilterAdd = React.useCallback(() => {
@@ -145,7 +144,7 @@ export function DataTableFilterList<TData>({
         operator: getDefaultFilterOperator(filterField.type),
         filterId: customAlphabet(
           "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-          6,
+          6
         )(),
       },
     ]);
@@ -172,22 +171,22 @@ export function DataTableFilterList<TData>({
         return updatedFilters;
       });
     },
-    [debouncedSetFilters, setFilters],
+    [debouncedSetFilters, setFilters]
   );
 
   const onFilterRemove = React.useCallback(
     (filterId: string) => {
       const updatedFilters = filters.filter(
-        (filter) => filter.filterId !== filterId,
+        (filter) => filter.filterId !== filterId
       );
       void setFilters(updatedFilters);
     },
-    [filters, setFilters],
+    [filters, setFilters]
   );
 
   const onFilterMove = React.useCallback(
     (activeIndex: number, overIndex: number) => {
-      void setFilters((prevFilters) => {
+      void setFilters((prevFilters: any) => {
         const newFilters = [...prevFilters];
         const [removed] = newFilters.splice(activeIndex, 1);
         if (!removed) return prevFilters;
@@ -195,7 +194,7 @@ export function DataTableFilterList<TData>({
         return newFilters;
       });
     },
-    [setFilters],
+    [setFilters]
   );
 
   const onFilterInputRender = React.useCallback(
@@ -362,11 +361,11 @@ export function DataTableFilterList<TData>({
           const displayValue =
             filter.operator === "isBetween" && dateValue.length === 2
               ? `${formatDate(dateValue[0] ?? new Date())} - ${formatDate(
-                  dateValue[1] ?? new Date(),
+                  dateValue[1] ?? new Date()
                 )}`
               : dateValue[0]
-                ? formatDate(dateValue[0])
-                : "Pick a date";
+              ? formatDate(dateValue[0])
+              : "Pick a date";
 
           return (
             <Popover>
@@ -379,7 +378,7 @@ export function DataTableFilterList<TData>({
                   size="sm"
                   className={cn(
                     "h-8 w-full justify-start rounded text-left font-normal focus:outline-none focus:ring-1 focus:ring-ring",
-                    !filter.value && "text-muted-foreground",
+                    !filter.value && "text-muted-foreground"
                   )}
                   onPointerDown={(event) => {
                     const target = event.target;
@@ -498,7 +497,7 @@ export function DataTableFilterList<TData>({
           return null;
       }
     },
-    [filterFields, onFilterUpdate],
+    [filterFields, onFilterUpdate]
   );
 
   // Create a handler that both applies filters and closes the popover
@@ -511,7 +510,7 @@ export function DataTableFilterList<TData>({
   const handleResetAndClose = React.useCallback(() => {
     void setFilters([]);
     void setJoinOperator("and");
-    
+
     // Use the external reset handler if provided
     if (handleResetFilters) {
       handleResetFilters();
@@ -527,7 +526,7 @@ export function DataTableFilterList<TData>({
       getItemValue={(item) => item.filterId}
       onMove={({ activeIndex, overIndex }) =>
         onFilterMove(activeIndex, overIndex)
-      } 
+      }
     >
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
@@ -564,7 +563,7 @@ export function DataTableFilterList<TData>({
               id={descriptionId}
               className={cn(
                 "text-muted-foreground text-sm",
-                filters.length > 0 && "sr-only",
+                filters.length > 0 && "sr-only"
               )}
             >
               {filters.length > 0
@@ -630,7 +629,7 @@ export function DataTableFilterList<TData>({
                                     >
                                       {joinOperator.label}
                                     </SelectItem>
-                                  ),
+                                  )
                                 )}
                               </SelectContent>
                             </Select>
@@ -668,7 +667,7 @@ export function DataTableFilterList<TData>({
                             >
                               <span className="truncate">
                                 {filterFields.find(
-                                  (field) => field.id === filter.id,
+                                  (field) => field.id === filter.id
                                 )?.label ?? "Select field"}
                               </span>
                               <ChevronsUpDown className="opacity-50" />
@@ -695,7 +694,7 @@ export function DataTableFilterList<TData>({
                                       value={field.id}
                                       onSelect={(value) => {
                                         const filterField = filterFields.find(
-                                          (col) => col.id === value,
+                                          (col) => col.id === value
                                         );
 
                                         if (!filterField) return;
@@ -706,7 +705,7 @@ export function DataTableFilterList<TData>({
                                             id: value as StringKeyOf<TData>,
                                             type: filterField.type,
                                             operator: getDefaultFilterOperator(
-                                              filterField.type,
+                                              filterField.type
                                             ),
                                             value: "",
                                           },
@@ -725,7 +724,7 @@ export function DataTableFilterList<TData>({
                                           "ml-auto size-4 shrink-0",
                                           field.id === filter.id
                                             ? "opacity-100"
-                                            : "opacity-0",
+                                            : "opacity-0"
                                         )}
                                       />
                                     </CommandItem>
@@ -809,18 +808,17 @@ export function DataTableFilterList<TData>({
             </Button>
             {filters.length > 0 ? (
               <>
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded"
-                onClick={handleResetAndClose}
-              >
-                Reset filters
-              </Button>
-             
-            </>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded"
+                  onClick={handleResetAndClose}
+                >
+                  Reset filters
+                </Button>
+              </>
             ) : null}
-             <Button
+            <Button
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={handleApplyAndClose}

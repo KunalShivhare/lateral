@@ -16,7 +16,15 @@ import {
 } from "@/components/ui/select";
 
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>;
+  table: Table<TData> & {
+    options: {
+      onPageSizeChange?: (pageSize: number) => void;
+      onPaginationChange?: (pagination: {
+        pageIndex: number;
+        pageSize: number;
+      }) => void;
+    };
+  };
   pageSizeOptions?: number[];
 }
 
@@ -67,7 +75,10 @@ export function DataTablePagination<TData>({
             onClick={() => {
               table.setPageIndex(0);
               if (table.options.onPaginationChange) {
-                table.options.onPaginationChange({ pageIndex: 0, pageSize: table.getState().pagination.pageSize });
+                table.options.onPaginationChange({
+                  pageIndex: 0,
+                  pageSize: table.getState().pagination.pageSize,
+                });
               }
             }}
             disabled={!table.getCanPreviousPage()}
@@ -84,7 +95,7 @@ export function DataTablePagination<TData>({
               if (table.options.onPaginationChange) {
                 table.options.onPaginationChange({
                   pageIndex: table.getState().pagination.pageIndex - 1,
-                  pageSize: table.getState().pagination.pageSize
+                  pageSize: table.getState().pagination.pageSize,
                 });
               }
             }}
@@ -102,7 +113,7 @@ export function DataTablePagination<TData>({
               if (table.options.onPaginationChange) {
                 table.options.onPaginationChange({
                   pageIndex: table.getState().pagination.pageIndex + 1,
-                  pageSize: table.getState().pagination.pageSize
+                  pageSize: table.getState().pagination.pageSize,
                 });
               }
             }}
@@ -121,7 +132,7 @@ export function DataTablePagination<TData>({
               if (table.options.onPaginationChange) {
                 table.options.onPaginationChange({
                   pageIndex: lastPage,
-                  pageSize: table.getState().pagination.pageSize
+                  pageSize: table.getState().pagination.pageSize,
                 });
               }
             }}
