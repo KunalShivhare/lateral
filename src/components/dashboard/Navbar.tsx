@@ -24,7 +24,7 @@ export function Navbar() {
           </Link>
         ) : (
           <Link
-            to="/dashboard/1"
+            to="/dashboard"
             className={`text-white font-medium ${
               isActive("/dashboard") ? "text-blue-500" : ""
             }`}
@@ -56,6 +56,18 @@ export function Navbar() {
         >
           Reports
         </Link>
+        {isActive("/cases") ? (
+          <></>
+        ) : (
+          <Link
+            to="/"
+            className={`text-white font-medium ${
+              isActive("/") ? "text-blue-500" : ""
+            }`}
+          >
+            Cases
+          </Link>
+        )}
       </div>
     </div>
   );

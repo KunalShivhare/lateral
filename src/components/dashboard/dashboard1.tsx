@@ -1,12 +1,12 @@
 import { PageLayout } from "../layout/PageLayout";
 
-export function Customers() {
+export function Dashboard1() {
   return (
     <PageLayout>
       <div className="space-y-6 p-6">
-        <h2 className="text-xl font-semibold">Customers</h2>
+        <h2 className="text-xl font-semibold">Dashboard</h2>
         <p className="text-slate-400">
-          Customer management page coming soon...
+          Dashboard management page coming soon...
         </p>
       </div>
     </PageLayout>

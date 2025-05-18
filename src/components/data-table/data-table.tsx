@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { getCommonPinningStyles } from "@/lib/data-table";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   /**
@@ -36,6 +37,11 @@ export function DataTable<TData>({
   className,
   ...props
 }: DataTableProps<TData>) {
+  const navigate = useNavigate();
+
+  const handleRowClick = (caseId: string) => {
+    navigate(`/dashboard/${caseId}`);
+  };
   return (
     <div
       className={cn("w-full space-y-2.5 overflow-auto", className)}
@@ -74,20 +80,23 @@ export function DataTable<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => handleRowClick(row.original["id"])}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        ...getCommonPinningStyles({ column: cell.column }),
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <TableCell
+                        key={cell.id}
+                        style={{
+                          ...getCommonPinningStyles({ column: cell.column }),
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               ))
             ) : (

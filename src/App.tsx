@@ -8,6 +8,7 @@ import { Invoices } from "./components/invoices/Invoices";
 import { Reports } from "./components/reports/Reports";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SearchProvider } from "./context/SearchContext";
+import { Dashboard1 } from "./components/dashboard/dashboard1";
 
 /*
 // Original code (commented out as requested):
@@ -37,7 +38,7 @@ function App() {
         <SearchProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/dashboard/:caseId" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard1 />} />
               <Route path="/cases" element={<CaseList />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/invoices" element={<Invoices />} />

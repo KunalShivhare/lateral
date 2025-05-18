@@ -535,7 +535,7 @@ export function CustomTable({}: CustomTableProps) {
   const tableConfig = React.useMemo(
     () => ({
       data: tasks,
-      columns: columns as ColumnDef<CustomTask>[],
+      columns: columns,
       pageCount: Math.ceil(
         (data?.rdebt_cases_aggregate?.aggregate?.count ?? 0) / Number(pageSize)
       ),
