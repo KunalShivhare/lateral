@@ -1,12 +1,7 @@
 import { useSearch } from "../../context/SearchContext";
 
 export function CaseSearchFilter() {
-  const { searchQuery, setSearchQuery, isNewSearchActive } = useSearch();
-
   // Only show if not using the sidebar search
-  if (isNewSearchActive) {
-    return null;
-  }
 
   return (
     <div className="space-y-4">
@@ -15,8 +10,8 @@ export function CaseSearchFilter() {
           <input
             type="text"
             placeholder="Search users and leads"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            // value={searchQuery}
+            // onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full border border-[#8C8C8C] rounded py-2 pl-3 pr-10 text-sm"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -59,7 +54,7 @@ export function CaseSearchFilter() {
       <div className="flex items-center">
         <button
           className="text-blue-500 text-sm"
-          onClick={() => setSearchQuery("")}
+          // onClick={() => setSearchQuery("")}
         >
           Clear Filters
         </button>

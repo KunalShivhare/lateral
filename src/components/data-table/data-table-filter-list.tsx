@@ -12,6 +12,7 @@ import {
   ChevronsUpDown,
   GripVertical,
   ListFilter,
+  Plus,
   Trash2,
 } from "lucide-react";
 import { customAlphabet } from "nanoid";
@@ -532,12 +533,12 @@ export function DataTableFilterList<TData>({
         <PopoverTrigger asChild>
           <Button
             aria-label="Open filters"
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="[&>svg]:size-3"
+            className="text-[#058FFF] dark:hover:text-[#058FFF]"
           >
-            <ListFilter aria-hidden="true" />
-            Filters
+            <Plus aria-hidden="true" />
+            Add Filter
             {filters.length > 0 && (
               <Badge
                 variant="secondary"
