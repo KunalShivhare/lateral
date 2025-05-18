@@ -1,6 +1,12 @@
 import * as React from "react";
 
-export function CaseDetails() {
+export function CaseDetails({
+  caseDetails,
+  debtor,
+}: {
+  caseDetails: any;
+  debtor: any;
+}) {
   const [otherInfoExpanded, setOtherInfoExpanded] = React.useState(true);
   const [loremIpsumExpanded, setLoremIpsumExpanded] = React.useState(false);
 
@@ -14,32 +20,40 @@ export function CaseDetails() {
       <div className="p-4 space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">CV Client Code</span>
-          <span className="text-white text-xs">999</span>
+          <span className="text-white text-xs">{caseDetails?.client_id}</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Name</span>
-          <span className="text-white text-xs">ZZ test</span>
+          <span className="text-white text-xs">{debtor?.debtor_name}</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Trading Name</span>
-          <span className="text-white text-xs">Lateral Test</span>
+          <span className="text-white text-xs">
+            {debtor?.debtor_trading_as}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Account Number</span>
-          <span className="text-white text-xs">874599465</span>
+          <span className="text-white text-xs">
+            {caseDetails?.client_account_number}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Workflow Title</span>
-          <span className="text-blue-500 text-xs">Email Flow</span>
+          <span className="text-blue-500 text-xs">
+            {caseDetails?.workflow_title}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Agent Name</span>
-          <span className="text-blue-500 text-xs">Lateral Test</span>
+          <span className="text-blue-500 text-xs">
+            {caseDetails?.agent_name}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
@@ -61,7 +75,9 @@ export function CaseDetails() {
           <span className="text-slate-400 text-xs">
             Total Outstanding Balance
           </span>
-          <span className="text-white text-xs">$822.52</span>
+          <span className="text-white text-xs">
+            ${caseDetails?.d_outstanding}
+          </span>
         </div>
       </div>
 

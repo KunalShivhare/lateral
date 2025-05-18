@@ -97,3 +97,34 @@ export const GET_FILTER_DEFINITIONS = gql`
     }
   }
 `;
+
+export const GET_CASE_DETAILS = gql`
+  query GetCaseDetails($case_id: String!) {
+    rdebt_cases(where: { id: { _eq: $case_id } }) {
+      id
+      date
+      ref
+      client_id
+      scheme_id
+      debtorid
+      amount1
+      d_outstanding
+      amount2
+      last_payment_date
+      last_payment_amount
+      offense_date
+      highcourt_date
+      current_stage_date
+      current_stage_id
+      d_outstanding
+      batch_id
+      debtor {
+        debtor_id
+        debtor_name
+        debtor_phone
+        debtor_employer_address
+        debtor_trading_as
+      }
+    }
+  }
+`;
