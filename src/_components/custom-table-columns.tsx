@@ -162,8 +162,8 @@ export function getCustomColumns({
   ];
 }
 
-export function getCustomAdvancedFilterFields({
-  data,
-}: GetColumnsProps): ColumnDef<CustomTask>[] {
-  return [...(data ? getFiltersFields(data) : [])];
-}
+// export function getCustomAdvancedFilterFields({
+//   data,
+// }: GetColumnsProps): ColumnDef<CustomTask>[] {
+//   return [...(data ? getFiltersFields(data) : [])];
+// }
