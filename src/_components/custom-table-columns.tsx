@@ -1,11 +1,11 @@
-import type { CustomTask } from "../_lib/custom-data";
-import type { DataTableRowAction } from "@/types";
-import type { ColumnDef } from "@tanstack/react-table";
+import { Column, ColumnDef } from "@tanstack/react-table";
 import { AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import * as React from "react";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
+import { type DataTableRowAction } from "@/types";
+import { type CustomTask } from "../_lib/custom-data";
 
 interface GetColumnsProps {
   setRowAction?: React.Dispatch<
@@ -14,7 +14,7 @@ interface GetColumnsProps {
   data?: CustomTask;
 }
 
-export function getStatusIcon(status: CustomTask["status"]) {
+export function getStatusIcon(status: string) {
   switch (status) {
     case "pending":
       return Clock;
@@ -29,7 +29,7 @@ export function getStatusIcon(status: CustomTask["status"]) {
   }
 }
 
-export function getPriorityIcon(priority: CustomTask["priority"]) {
+export function getPriorityIcon(priority: string) {
   switch (priority) {
     case "low":
       return Clock;
@@ -45,12 +45,31 @@ export function getPriorityIcon(priority: CustomTask["priority"]) {
 const getData = (data: CustomTask) => {
   const keys = Object.keys(data).filter((key) => key !== "__typename");
   return keys.map((key) => {
-    const title =
-      key.replace(/_/g, " ").charAt(0).toUpperCase() +
-      key.replace(/_/g, " ").slice(1);
+    const title = key
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
+    // Set appropriate column sizes based on content type
+    let initialSize = Math.max(100, title.length * 10); // Base size on title length
+
+    // Adjust size based on data type
+    const value = data[key as keyof CustomTask];
+    if (typeof value === "number") {
+      initialSize = Math.min(initialSize, 120); // Numbers usually need less space
+    } else if (typeof value === "boolean") {
+      initialSize = 100; // Booleans need minimal space
+    } else if (typeof value === "string") {
+      if (key.includes("date") || value.match(/^\d{4}-\d{2}-\d{2}/)) {
+        initialSize = 150; // Dates need specific space
+      } else if (value.length > 50) {
+        initialSize = 250; // Long text needs more space
+      }
+    }
+
     return {
       accessorKey: key,
-      header: ({ column }: { column: any }) => (
+      header: ({ column }: { column: Column<any, unknown> }) => (
         <DataTableColumnHeader column={column} title={title} />
       ),
       cell: ({ row }: { row: any }) => {
@@ -62,28 +81,27 @@ const getData = (data: CustomTask) => {
           </div>
         );
       },
+      size: initialSize,
     };
   });
 };
 
 export function getCustomColumns({
+  setRowAction,
   data,
-}: Omit<GetColumnsProps, "setRowAction">): ColumnDef<CustomTask>[] {
+}: GetColumnsProps): ColumnDef<CustomTask>[] {
   return [
     {
       id: "select",
       header: ({ table }) => (
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected()
-              ? true
-              : table.getIsSomePageRowsSelected()
-              ? "indeterminate"
-              : false
-          }
+          checked={Boolean(
+            table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+          )}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="translate-y-0.5 mr-4"
+          className="translate-y-0.5 mx-auto"
         />
       ),
       cell: ({ row }) => (
@@ -91,11 +109,12 @@ export function getCustomColumns({
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-          className="translate-y-0.5 mr-4"
+          className="translate-y-0.5 mx-auto"
         />
       ),
       enableSorting: false,
       enableHiding: false,
+      size: 60, // Fixed width for selection column
     },
     ...(data ? getData(data) : []),
     // {
@@ -141,4 +160,10 @@ export function getCustomColumns({
     //   size: 40,
     // },
   ];
+}
+
+export function getCustomAdvancedFilterFields({
+  data,
+}: GetColumnsProps): ColumnDef<CustomTask>[] {
+  return [...(data ? getFiltersFields(data) : [])];
 }

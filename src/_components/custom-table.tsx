@@ -1,5 +1,10 @@
 import { useQuery } from "@apollo/client";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  OnChangeFn,
+  SortingState,
+  VisibilityState,
+} from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
 import * as React from "react";
 
@@ -11,12 +16,18 @@ import { getFiltersStateParser } from "@/lib/parsers";
 import type {
   DataTableAdvancedFilterField,
   DataTableFilterField,
+  DataTableRowAction,
   Filter,
 } from "@/types";
 
 import { ModeToggle } from "@/components/mode-toggle";
 import { type CustomTask } from "../_lib/custom-data";
-import { GET_TASKS } from "../_lib/queries";
+import {
+  GET_FILTER_DEFINITIONS,
+  GET_SAVED_FILTERS,
+  GET_SAVED_VIEWS,
+  GET_TASKS,
+} from "../_lib/queries";
 import { getCustomColumns } from "./custom-table-columns";
 import { useFeatureFlags } from "./feature-flags-provider";
 import TableActionButtons from "@/components/case-list/tableActionButton";
@@ -51,10 +62,8 @@ const CustomAdvancedToolbar = React.memo(function CustomAdvancedToolbarInner({
 
   // Initialize local filters when initialFilters change - only when empty
   React.useEffect(() => {
-    if (initialFilters.length > 0 && localFilters.length === 0) {
-      setLocalFilters(initialFilters);
-    }
-  }, [initialFilters.length]);
+    setLocalFilters(initialFilters);
+  }, [initialFilters]);
 
   // Custom handler for filter changes - stable reference
   const handleFilterChange = React.useCallback((filters: Filter<any>[]) => {
@@ -186,8 +195,13 @@ const convertFilterToGraphQL = (filter: Filter<CustomTask>) => {
 };
 
 export function CustomTable({}: CustomTableProps) {
-  // Using useFeatureFlags but not using the featureFlags variable
-  useFeatureFlags();
+  const [rowAction, setRowAction] =
+    React.useState<DataTableRowAction<CustomTask> | null>(null);
+
+  // Fetch filter definitions at the top level
+  const { data: filterDefinitionsData, loading: filterDefinitionsLoading } =
+    useQuery(GET_FILTER_DEFINITIONS);
+  const filterDefinitions = filterDefinitionsData?.filter_definition || [];
 
   // Add pagination state
   const [pageIndex, setPageIndex] = useQueryState("page", {
@@ -199,38 +213,230 @@ export function CustomTable({}: CustomTableProps) {
     defaultValue: "10",
   });
 
+  // Add sorting state
+  const [sorting, setSorting] = useQueryState("sort", {
+    defaultValue: JSON.stringify([{ id: "date", desc: true }]),
+  });
+
   // Get advanced filters from URL
   const [advancedFilters, setAdvancedFilters] = useQueryState(
     "filters",
-    getFiltersStateParser<CustomTask>().withDefault([])
+    getFiltersStateParser<any>().withDefault([])
   );
 
   // Get join operator from URL
   const [joinOperator] = useQueryState("joinOperator", { defaultValue: "and" });
 
+  // Track column visibility state with no initial hidden columns
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+
+  // Table reference to be used in callbacks
+  const tableRef = React.useRef<any>(null);
+
+  // Query for saved filters
+  const { data: savedFiltersData, refetch: refetchSavedFilters } =
+    useQuery(GET_SAVED_FILTERS);
+
+  // Query for saved views
+  const {
+    data: savedViewsData,
+    loading: viewsLoading,
+    refetch: refetchSavedViews,
+  } = useQuery(GET_SAVED_VIEWS);
+
+  // Create filter fields - stable references
+  const filterFields = React.useMemo(() => {
+    return filterDefinitions
+      .filter((def: any) => def.active)
+      .map((def: any) => ({
+        id: def.column_name,
+        label: def.display_name,
+        placeholder: `Filter ${def.display_name.toLowerCase()}...`,
+      })) as DataTableFilterField<CustomTask>[];
+  }, [filterDefinitions]);
+
+  // Advanced filter fields - stable references
+  const advancedFilterFields = React.useMemo(() => {
+    return filterDefinitions
+      .filter((def: any) => def.active)
+      .map((def: any) => ({
+        id: def.column_name,
+        label: def.display_name,
+        type: def.filter_type,
+        placeholder: `Filter ${def.display_name.toLowerCase()}...`,
+      })) as DataTableAdvancedFilterField<CustomTask>[];
+  }, [filterDefinitions]);
+
+  const convertFilterToGraphQL = React.useCallback(
+    (filter: Filter<any>) => {
+      const { id, operator, value } = filter;
+      const filterDef = filterDefinitions.find(
+        (def: any) => def.column_name === id
+      );
+
+      if (!filterDef) return null;
+
+      // Create the base filter object based on the table name
+      const createFilterObject = (condition: any) => {
+        // If it's the main table (rdebt_cases), return direct filter
+        if (filterDef.table_name === "rdebt_cases") {
+          console.log("🚀 ~ createFilterObject ~ condition:", condition);
+          return condition;
+        }
+
+        // For nested tables, create the appropriate structure
+        switch (filterDef.table_name) {
+          case "rdebt_debtor":
+            return {
+              debtor: condition,
+            };
+          case "rdebt_creditor":
+            return {
+              creditor: condition,
+            };
+          // Add more cases for other related tables
+          default:
+            return condition;
+        }
+      };
+
+      // Handle empty/null values
+      if (operator === "isEmpty") {
+        return createFilterObject({ [id]: { _is_null: true } });
+      }
+      if (operator === "isNotEmpty") {
+        return createFilterObject({ [id]: { _is_null: false } });
+      }
+
+      // Handle different filter types
+      switch (filterDef.filter_type) {
+        case "text":
+          switch (operator) {
+            case "eq":
+              return createFilterObject({ [id]: { _eq: value } });
+            case "ne":
+              return createFilterObject({ [id]: { _neq: value } });
+            case "iLike":
+              return createFilterObject({ [id]: { _ilike: `%${value}%` } });
+            case "notILike":
+              return createFilterObject({ [id]: { _nilike: `%${value}%` } });
+            default:
+              return null;
+          }
+        case "number":
+          const numValue = Number(value);
+          if (isNaN(numValue)) return null;
+          switch (operator) {
+            case "eq":
+              return createFilterObject({ [id]: { _eq: numValue } });
+            case "ne":
+              return createFilterObject({ [id]: { _neq: numValue } });
+            case "lt":
+              return createFilterObject({ [id]: { _lt: numValue } });
+            case "lte":
+              return createFilterObject({ [id]: { _lte: numValue } });
+            case "gt":
+              return createFilterObject({ [id]: { _gt: numValue } });
+            case "gte":
+              return createFilterObject({ [id]: { _gte: numValue } });
+            default:
+              return null;
+          }
+        case "date":
+          switch (operator) {
+            case "eq":
+              return createFilterObject({ [id]: { _eq: value } });
+            case "ne":
+              return createFilterObject({ [id]: { _neq: value } });
+            case "lt":
+              return createFilterObject({ [id]: { _lt: value } });
+            case "lte":
+              return createFilterObject({ [id]: { _lte: value } });
+            case "gt":
+              return createFilterObject({ [id]: { _gt: value } });
+            case "gte":
+              return createFilterObject({ [id]: { _gte: value } });
+            case "isBetween":
+              return createFilterObject({
+                [id]: {
+                  _gte: value[0],
+                  _lte: value[1],
+                },
+              });
+            default:
+              return null;
+          }
+        default:
+          return null;
+      }
+    },
+    [filterDefinitions]
+  );
+
+  // Function to apply filters - stable reference
+  const applyFilters = React.useCallback(
+    (newFilters: Filter<any>[]) => {
+      setAdvancedFilters(newFilters);
+      const filters =
+        joinOperator === "and"
+          ? newFilters.map(convertFilterToGraphQL).filter(Boolean) ?? {}
+          : {};
+      // After setting the filters, refetch the data
+      refetch({
+        filters: filters,
+        joinOperator,
+        offset: Number(pageIndex) * Number(pageSize),
+        limit: Number(pageSize),
+      });
+    },
+    [
+      setAdvancedFilters,
+      joinOperator,
+      pageIndex,
+      pageSize,
+      convertFilterToGraphQL,
+    ]
+  );
+
+  // Parse sorting state
+  const parsedSorting = React.useMemo(() => {
+    try {
+      const parsed = JSON.parse(sorting);
+      return parsed.map((item: any) => ({
+        id: item.id as keyof CustomTask,
+        desc: item.desc as boolean,
+      }));
+    } catch (e) {
+      return [{ id: "date" as keyof CustomTask, desc: true }];
+    }
+  }, [sorting]);
+
   // Feature flags - stable references
   const enableAdvancedTable = true;
   const enableFloatingBar = false;
 
-  // Convert filters to GraphQL format
-  const graphqlFilters = React.useMemo(() => {
-    if (!advancedFilters.length) return null;
-
-    const convertedFilters = advancedFilters
-      .map(convertFilterToGraphQL)
-      .filter(Boolean);
-
-    return joinOperator === "and" ? convertedFilters : [];
-  }, [advancedFilters, joinOperator]);
+  // Convert sorting to GraphQL format
+  const graphqlSorting = React.useMemo(() => {
+    return parsedSorting.map(
+      (sort: { id: keyof CustomTask; desc: boolean }) => ({
+        [sort.id]: sort.desc ? "desc" : "asc",
+      })
+    );
+  }, [parsedSorting]);
 
   const [tasks, setTasks] = React.useState<CustomTask[]>([]);
   // Fetch tasks using GraphQL with filters
-  const { data, refetch } = useQuery(GET_TASKS, {
+  const { data, loading, error, refetch } = useQuery(GET_TASKS, {
     variables: {
-      filters: graphqlFilters ?? {},
+      filters:
+        joinOperator === "and"
+          ? advancedFilters.map(convertFilterToGraphQL).filter(Boolean) ?? {}
+          : {},
       joinOperator,
       offset: Number(pageIndex) * Number(pageSize),
       limit: Number(pageSize),
+      orderBy: graphqlSorting,
     },
     onCompleted: (data) => {
       setTasks(data.rdebt_cases);
@@ -248,103 +454,82 @@ export function CustomTable({}: CustomTableProps) {
       setPageIndex("0"); // Reset to first page when changing page size
       // Use refetch with the new variables
       refetch({
-        filters: graphqlFilters ?? {},
+        filters:
+          joinOperator === "and"
+            ? advancedFilters.map(convertFilterToGraphQL).filter(Boolean) ?? {}
+            : {},
         joinOperator,
         offset: 0, // Reset to first page
         limit: newPageSize,
+        orderBy: graphqlSorting,
       });
     },
-    [refetch, graphqlFilters, joinOperator]
+    [refetch, joinOperator, graphqlSorting, advancedFilters]
+  );
+
+  // Handle sorting change
+  const handleSortingChange = React.useCallback<OnChangeFn<SortingState>>(
+    (updaterOrValue) => {
+      // Handle both function updater and direct value
+      const updatedSorting =
+        typeof updaterOrValue === "function"
+          ? updaterOrValue(parsedSorting)
+          : updaterOrValue;
+
+      const sortingString = JSON.stringify(updatedSorting);
+      setSorting(sortingString);
+
+      // Convert new sorting to GraphQL format
+      const newGraphqlSorting = updatedSorting.map((sort) => ({
+        [sort.id]: sort.desc ? "desc" : "asc",
+      }));
+
+      // Refetch with new sorting
+      refetch({
+        filters:
+          joinOperator === "and"
+            ? advancedFilters.map(convertFilterToGraphQL).filter(Boolean) ?? {}
+            : {},
+        joinOperator,
+        offset: Number(pageIndex) * Number(pageSize),
+        limit: Number(pageSize),
+        orderBy: newGraphqlSorting,
+      });
+    },
+    [
+      setSorting,
+      refetch,
+      joinOperator,
+      pageIndex,
+      pageSize,
+      parsedSorting,
+      advancedFilters,
+    ]
   );
 
   const columns = React.useMemo(
-    () => getCustomColumns({ data: tasks[0] }),
+    () => getCustomColumns({ setRowAction, data: tasks[0] }),
     [tasks]
   );
 
-  // Create filter fields - stable references
-  const filterFields = React.useMemo(
-    () =>
-      [
-        {
-          id: "amount1",
-          label: "Amount 1",
-          placeholder: "Filter amount 1...",
-        },
-        {
-          id: "amount2",
-          label: "Amount 2",
-          placeholder: "Filter amount 2...",
-        },
-        {
-          id: "batch_id",
-          label: "Batch ID",
-          placeholder: "Filter batch ID...",
-        },
-        {
-          id: "date",
-          label: "Date",
-          placeholder: "Filter date...",
-        },
-        {
-          id: "due_date",
-          label: "Due Date",
-          placeholder: "Filter due date...",
-        },
-      ] as DataTableFilterField<CustomTask>[],
-    []
-  );
-
-  // Advanced filter fields - stable references
-  const advancedFilterFields = React.useMemo(
-    () =>
-      [
-        {
-          id: "amount1",
-          label: "Amount 1",
-          type: "number",
-        },
-        {
-          id: "amount2",
-          label: "Amount 2",
-          type: "number",
-        },
-        {
-          id: "batch_id",
-          label: "Batch ID",
-          type: "text",
-        },
-        {
-          id: "date",
-          label: "Date",
-          type: "date",
-        },
-        {
-          id: "due_date",
-          label: "Due Date",
-          type: "date",
-        },
-        {
-          id: "debtorid",
-          label: "Debtor ID",
-          type: "text",
-        },
-        {
-          id: "client_id",
-          label: "Client ID",
-          type: "number",
-        },
-      ] as DataTableAdvancedFilterField<CustomTask>[],
-    []
-  );
-
-  // Function to apply filters - stable reference
-  const applyFilters = React.useCallback(
-    (newFilters: Filter<CustomTask>[]) => {
-      setAdvancedFilters(newFilters);
+  // Handle selecting a saved filter
+  const handleSavedFilterSelect = React.useCallback(
+    (filters: Filter<any>[]) => {
+      applyFilters(filters);
     },
-    [setAdvancedFilters]
+    [applyFilters]
   );
+
+  // Handle selecting a saved view - using tableRef instead of direct table reference
+  const handleSavedViewSelect = React.useCallback((views: VisibilityState) => {
+    // Apply the column visibility from the saved view
+    setColumnVisibility(views);
+
+    // Update the table's columnVisibility state if table exists
+    if (tableRef.current) {
+      tableRef.current.setColumnVisibility(views);
+    }
+  }, []);
 
   // Memoize the table configuration
   const tableConfig = React.useMemo(
@@ -356,14 +541,22 @@ export function CustomTable({}: CustomTableProps) {
       ),
       filterFields: filterFields,
       enableAdvancedFilter: enableAdvancedTable,
+      advancedFilterFields: advancedFilterFields,
       initialState: {
-        sorting: [{ id: "date" as keyof CustomTask, desc: true }],
+        sorting: parsedSorting.map(
+          (sort: { id: keyof CustomTask; desc: boolean }) => ({
+            id: sort.id as keyof CustomTask,
+            desc: sort.desc,
+          })
+        ),
         columnPinning: { right: ["actions"] },
         pagination: {
           pageIndex: Number(pageIndex),
           pageSize: Number(pageSize),
         },
+        columnVisibility: columnVisibility,
       },
+
       getRowId: (originalRow: CustomTask) => originalRow.id,
       shallow: false,
       clearOnDefault: true,
@@ -375,6 +568,7 @@ export function CustomTable({}: CustomTableProps) {
       enableFilters: true,
       manualFiltering: true,
       manualPagination: true,
+      manualSorting: true,
       onPaginationChange: (updater: any) => {
         const newPageIndex =
           typeof updater === "function"
@@ -384,15 +578,28 @@ export function CustomTable({}: CustomTableProps) {
               }).pageIndex
             : updater.pageIndex;
         setPageIndex(String(newPageIndex));
+        const filters =
+          joinOperator === "and"
+            ? advancedFilters.map(convertFilterToGraphQL).filter(Boolean) ?? {}
+            : {};
         // Use refetch with the new variables
         refetch({
-          filters: graphqlFilters ?? {},
+          filters: filters,
           joinOperator,
           offset: newPageIndex * Number(pageSize),
           limit: Number(pageSize),
+          orderBy: graphqlSorting,
         });
       },
+      onSortingChange: handleSortingChange,
       onPageSizeChange: handlePageSizeChange,
+      onColumnVisibilityChange: (updater: any) => {
+        // Handle both function updater and direct value
+        const updatedVisibility =
+          typeof updater === "function" ? updater(columnVisibility) : updater;
+
+        setColumnVisibility(updatedVisibility);
+      },
     }),
     [
       tasks,
@@ -404,31 +611,75 @@ export function CustomTable({}: CustomTableProps) {
       data?.rdebt_cases_aggregate?.aggregate?.count,
       refetch,
       handlePageSizeChange,
+      parsedSorting,
+      handleSortingChange,
+      graphqlSorting,
+      columnVisibility,
     ]
   );
 
   // Get the table instance with stable configuration
   const { table } = useDataTable(tableConfig);
 
+  // Store table reference for callbacks and ensure column visibility reset is applied
+  React.useEffect(() => {
+    if (table) {
+      tableRef.current = table;
+
+      // Ensure the table has empty column visibility on page refresh
+      // This will show all columns by default
+      table.setColumnVisibility({});
+    }
+  }, [table]);
+
   // Memoize the toolbar with proper typing
   const toolbar = React.useMemo(() => {
     if (enableAdvancedTable) {
       return (
-        <CustomAdvancedToolbar
-          table={table}
-          filterFields={advancedFilterFields}
-          initialFilters={advancedFilters}
-          onApply={applyFilters}
-          onReset={() => {
-            setAdvancedFilters([]);
-            refetch({
-              filters: {},
-              joinOperator,
-              offset: 0,
-              limit: Number(pageSize),
-            });
-          }}
-        />
+        <div className="flex flex-col gap-2 w-full">
+          {/* <div className="flex justify-between items-center mb-2">
+            <div className="flex gap-2">
+              <SavedFiltersDropdown onSelect={handleSavedFilterSelect} />
+              <SaveFilterDialog 
+                filters={advancedFilters} 
+                onSave={() => refetchSavedFilters()} 
+              />
+              <div className="border-r border-gray-200 h-8 mx-2"></div>
+              <SavedViewsDropdown onSelect={handleSavedViewSelect} />
+              <SaveViewDialog 
+                columnVisibility={table.getState().columnVisibility} 
+                onSave={() => refetchSavedViews()} 
+              />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  // Reset column visibility to show all columns
+                  setColumnVisibility({});
+                  table.setColumnVisibility({});
+                }}
+              >
+                Reset View
+              </Button>
+            </div>
+          </div> */}
+
+          <CustomAdvancedToolbar
+            table={table}
+            filterFields={advancedFilterFields}
+            initialFilters={advancedFilters}
+            onApply={applyFilters}
+            onReset={() => {
+              setAdvancedFilters([]);
+              refetch({
+                filters: {},
+                joinOperator,
+                offset: 0,
+                limit: Number(pageSize),
+              });
+            }}
+          />
+        </div>
       );
     } else {
       return <DataTableToolbar table={table} filterFields={filterFields} />;
@@ -442,6 +693,11 @@ export function CustomTable({}: CustomTableProps) {
     filterFields,
     pageSize,
     refetch,
+    graphqlSorting,
+    handleSavedFilterSelect,
+    handleSavedViewSelect,
+    refetchSavedFilters,
+    refetchSavedViews,
   ]);
 
   // Memoize the entire DataTable to prevent re-renders
