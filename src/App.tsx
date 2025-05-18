@@ -38,7 +38,8 @@ function App() {
         <SearchProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/dashboard" element={<Dashboard1 />} />
+              <Route path="/dashboard/:caseId" element={<Dashboard />} />
+              <Route path="/dashboard1" element={<Dashboard1 />} />
               <Route path="/cases" element={<CaseList />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/invoices" element={<Invoices />} />

@@ -13,25 +13,14 @@ export function Navbar() {
   return (
     <div className="h-14 bg-black flex items-center px-6">
       <div className="flex space-x-10">
-        {isActive("/dashboard") ? (
-          <Link
-            to="/cases"
-            className={`text-white font-medium ${
-              isActive("/cases") ? "text-blue-500" : ""
-            }`}
-          >
-            Cases
-          </Link>
-        ) : (
-          <Link
-            to="/dashboard"
-            className={`text-white font-medium ${
-              isActive("/dashboard") ? "text-blue-500" : ""
-            }`}
-          >
-            Dashboard
-          </Link>
-        )}
+        <Link
+          to="/dashboard1"
+          className={`text-white font-medium ${
+            isActive("/dashboard") ? "text-blue-500" : ""
+          }`}
+        >
+          Dashboard
+        </Link>
         <Link
           to="/customers"
           className={`text-white font-medium ${
