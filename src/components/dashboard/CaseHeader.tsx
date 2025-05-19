@@ -1,22 +1,27 @@
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
+import { EmptyDialog } from "./EmptyDialog";
 
 export function CaseHeader({
   debtor,
   caseDetails,
+  openDialog,
+  closeDialog,
 }: {
   debtor: any;
   caseDetails: any;
+  openDialog: (title?: string, description?: string) => void;
+  closeDialog: () => void;
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
-  
+
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        dropdownButtonRef.current && 
+        dropdownButtonRef.current &&
         !dropdownButtonRef.current.contains(event.target as Node) &&
         dropdownMenuRef.current &&
         !dropdownMenuRef.current.contains(event.target as Node)
@@ -24,13 +29,13 @@ export function CaseHeader({
         setDropdownOpen(false);
       }
     }
-    
-    document.addEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
   return (
     <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg ">
       <div className="flex justify-between items-center px-3 pt-4">
@@ -164,7 +169,7 @@ export function CaseHeader({
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M8.01814 0C3.60816 0 0 3.1 0 7C0 10.9 3.60816 14 8.01814 14C8.41905 14 8.81995 14 9.12064 13.9L14.0317 16V11.6C15.2345 10.4 16.0363 8.8 16.0363 7C16.0363 3.1 12.4281 0 8.01814 0Z"
+              d="M8.01814 0C3.60816 0 0 3.1 0 7C0 10.9 3.60816 14 8.01814 14C8.41905 14 8.81995 14 9.12064 13.9L14.0317 16V11.6C15.2345 10.4 16.0363 8.8 16.0363 7C16.0363 3.1 12.4281 0 8.01814 0ZM6.31429 11.7L4.30975 9.7C3.90884 9.3 3.90884 8.7 4.30975 8.3C4.71066 7.9 5.31202 7.9 5.71292 8.3L7.01587 9.6L10.3234 6.3C10.7243 5.9 11.3256 5.9 11.7265 6.3C12.1274 6.7 12.1274 7.3 11.7265 7.7L7.71746 11.7C7.31655 12.1 6.81542 12.2 6.31429 11.7ZM5.25 10.5C6.5 9.94771 7.94772 9.5 9.75 9.5L9.75 9.5L12.25 9.5C13.3023 9.5 13.75 9.94772 13.75 10.5C13.75 11.0523 13.3023 11.5 12.25 11.5L9.75 11.5C7.94772 11.5 6.5 11.0523 6.5 10.5ZM7.5 11.75C6.94772 11.75 6.5 12.1977 6.5 12.75C6.5 13.3023 6.94772 13.75 7.5 13.75L10.875 13.75C11.4273 13.75 11.875 13.3023 11.875 12.75C11.875 12.1977 11.4273 11.75 10.875 11.75L7.5 11.75Z"
               fill="#BABABA"
             />
           </svg>
@@ -194,7 +199,7 @@ export function CaseHeader({
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
-              d="M5.01134 0H11.0249V4H5.01134V0ZM15.034 1H12.0272V3H14.0317V14H2.00454V3H4.00907V1H1.00227C0.400907 1 0 1.4 0 2V15C0 15.6 0.400907 16 1.00227 16H15.034C15.6354 16 16.0363 15.6 16.0363 15V2C16.0363 1.4 15.6354 1 15.034 1ZM6.31429 11.7L4.30975 9.7C3.90884 9.3 3.90884 8.7 4.30975 8.3C4.71066 7.9 5.31202 7.9 5.71292 8.3L7.01587 9.6L10.3234 6.3C10.7243 5.9 11.3256 5.9 11.7265 6.3C12.1274 6.7 12.1274 7.3 11.7265 7.7L7.71746 11.7C7.31655 12.1 6.81542 12.2 6.31429 11.7Z"
+              d="M5.01134 0H11.0249V4H5.01134V0ZM15.034 1H12.0272V3H14.0317V14H2.00454V3H4.00907V1H1.00227C0.400907 1 0 1.4 0 2V15C0 15.6 0.400907 16 1.00227 16H15.034C15.6354 16 16.0363 15.6 16.0363 15V2C16.0363 1.4 15.6354 1 15.034 1ZM6.31429 11.7L4.30975 9.7C3.90884 9.3 3.90884 8.7 4.30975 8.3C4.71066 7.9 5.31202 7.9 5.71292 8.3L7.01587 9.6L10.3234 6.3C10.7243 5.9 11.3256 5.9 11.7265 6.3C12.1274 6.7 12.1274 7.3 11.7265 7.7L7.71746 11.7C7.31655 12.1 6.81542 12.2 6.31429 11.7ZM5.25 10.5C6.5 9.94771 7.94772 9.5 9.75 9.5L9.75 9.5L12.25 9.5C13.3023 9.5 13.75 9.94772 13.75 10.5C13.75 11.0523 13.3023 11.5 12.25 11.5L9.75 11.5C7.94772 11.5 6.5 11.0523 6.5 10.5ZM7.5 11.75C6.94772 11.75 6.5 12.1977 6.5 12.75C6.5 13.3023 6.94772 13.75 7.5 13.75L10.875 13.75C11.4273 13.75 11.875 13.3023 11.875 12.75C11.875 12.1977 11.4273 11.75 10.875 11.75L7.5 11.75Z"
               fill="#BABABA"
             />
           </svg>
@@ -273,10 +278,10 @@ export function CaseHeader({
           </svg>
         </button>
         <div className="relative">
-          <button 
+          <button
             className="p-2 text-slate-400 hover:bg-slate-800 rounded"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
             ref={dropdownButtonRef}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <svg
               width="18"
@@ -284,7 +289,6 @@ export function CaseHeader({
               viewBox="0 0 16 16"
               xmlns="http://www.w3.org/2000/svg"
               fill="#BABABA"
-              className="bi bi-three-dots-vertical"
             >
               <g id="SVGRepo_bgCarrier" strokeWidth={0} />
               <g
@@ -293,47 +297,50 @@ export function CaseHeader({
                 strokeLinejoin="round"
               />
               <g id="SVGRepo_iconCarrier">
-                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm.25 12a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5zM8 3a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5A.75.75 0 0 1 8 3z" />
               </g>
             </svg>
           </button>
-          
+
           {dropdownOpen && (
-            <div ref={dropdownMenuRef} className="absolute right-0 mt-2 w-56 bg-[#1E1E1E] border border-[#3F3F3F] rounded-md shadow-lg z-10">
+            <div
+              ref={dropdownMenuRef}
+              className="absolute right-0 mt-2 w-56 bg-[#1E1E1E] border border-[#3F3F3F] rounded-md shadow-lg z-10"
+            >
               <div className="py-1">
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📋</span> Account Payments
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📧</span> Payment Plan
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📄</span> Letter
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📧</span> Adjust Debt
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📧</span> Case Participants
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">⏸️</span> Freeze Interest
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📧</span> Forms
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📁</span> Doc Bundling
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">📊</span> Income and Expense
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">👥</span> Make Joint Liability
-                </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                </button>
+                <button className="flex items-center w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800">
                   <span className="mr-2">≡</span> Variables List
-                </a>
+                </button>
               </div>
             </div>
           )}

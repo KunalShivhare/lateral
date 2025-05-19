@@ -21,8 +21,8 @@ export function TabsArea() {
         return <Overview />;
       default:
         return (
-          <div className="p-6 min-h-[300px] flex items-center justify-center text-[#939292]">
-            <p>{activeTab} content will go here</p>
+          <div className="p-6 min-h-[300px] flex flex-col items-center justify-center text-[#939292]">
+            <p className="mb-4">{activeTab} content will go here</p>
           </div>
         );
     }
