@@ -39,108 +39,137 @@ export function DataTableColumnHeader<TData, TValue>({
   const descValue = `${column.id}-desc`;
   const hideValue = `${column.id}-hide`;
 
-  // State to track if we're dragging the grip handle
+  // Track if we're currently dragging this column
   const [isDragging, setIsDragging] = useState(false);
-  const gripRef = useRef<HTMLDivElement>(null);
-
-  // Handle drag start from the grip handle
-  const handleGripDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation();
+  // Reference to the drag handle element
+  const dragHandleRef = useRef<HTMLDivElement>(null);
+  
+  // Handle drag start
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    // Only allow dragging from the grip handle
+    const target = e.target as HTMLElement;
+    if (!target.closest('.column-drag-handle')) {
+      e.preventDefault();
+      return;
+    }
+    
     setIsDragging(true);
-
-    // Set the column ID as drag data
-    e.dataTransfer.setData("column-id", column.id);
-    e.dataTransfer.effectAllowed = "move";
-
-    // Create a ghost image for dragging
-    if (gripRef.current) {
-      const rect = gripRef.current.getBoundingClientRect();
-      const ghostEl = document.createElement("div");
+    
+    // Set data transfer properties
+    e.dataTransfer.effectAllowed = 'move';
+    // Use standard text/plain format for better browser compatibility
+    e.dataTransfer.setData('text/plain', column.id);
+    
+    // Create a custom drag image
+    if (dragHandleRef.current?.parentElement) {
+      const headerEl = dragHandleRef.current.parentElement;
+      const rect = headerEl.getBoundingClientRect();
+      
+      const ghostEl = headerEl.cloneNode(true) as HTMLDivElement;
       ghostEl.style.width = `${rect.width}px`;
       ghostEl.style.height = `${rect.height}px`;
-      ghostEl.style.background = "rgba(0, 0, 0, 0.1)";
-      ghostEl.style.border = "2px dashed #666";
-      ghostEl.style.position = "absolute";
-      ghostEl.style.top = "-1000px";
-      ghostEl.style.left = "-1000px";
+      ghostEl.style.backgroundColor = '#f9fafb';
+      ghostEl.style.border = '1px solid #e5e7eb';
+      ghostEl.style.borderRadius = '4px';
+      ghostEl.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+      ghostEl.style.opacity = '0.8';
+      ghostEl.style.position = 'absolute';
+      ghostEl.style.top = '-1000px';
+      ghostEl.style.left = '-1000px';
       document.body.appendChild(ghostEl);
-
-      e.dataTransfer.setDragImage(ghostEl, 0, 0);
-
-      // Clean up ghost element
+      
+      e.dataTransfer.setDragImage(ghostEl, 20, 20);
+      
+      // Clean up the ghost element
       setTimeout(() => {
         document.body.removeChild(ghostEl);
       }, 0);
     }
   };
-
+  
   // Handle drag over
-  const handleGripDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = 'move';
+    
+    // Add visual indicator for drop target
+    if (e.currentTarget) {
+      e.currentTarget.style.boxShadow = '0 0 0 2px #3b82f6';
+    }
   };
-
+  
+  // Handle drag leave
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    // Remove visual indicator
+    if (e.currentTarget) {
+      e.currentTarget.style.boxShadow = '';
+    }
+  };
+  
   // Handle drag end
-  const handleGripDragEnd = () => {
+  const handleDragEnd = () => {
     setIsDragging(false);
   };
-
+  
   // Handle drop
-  const handleGripDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-
-    // Get the dragged column ID
-    const sourceId = e.dataTransfer.getData("column-id");
-    const targetId = column.id;
-
-    // Don't do anything if dropping the column on itself
-    if (sourceId === targetId) {
-      return;
+    
+    // Remove visual indicator
+    if (e.currentTarget) {
+      e.currentTarget.style.boxShadow = '';
     }
-
+    
+    // Get the source column ID
+    const sourceId = e.dataTransfer.getData('text/plain');
+    const targetId = column.id;
+    
+    // Don't do anything if dropping the column on itself
+    if (sourceId === targetId) return;
+    
     // Get all visible columns
-    const columns = table
-      .getAllLeafColumns()
-      .filter((col) => col.getIsVisible());
-
+    const columns = table.getAllLeafColumns().filter(col => col.getIsVisible());
+    
     // Get current column order or initialize with all column IDs
-    const currentOrder =
-      table.getState().columnOrder.length > 0
-        ? [...table.getState().columnOrder]
-        : columns.map((col) => col.id);
-
+    const currentOrder = table.getState().columnOrder.length > 0
+      ? [...table.getState().columnOrder]
+      : columns.map(col => col.id);
+    
     // Find indices
     const sourceIndex = currentOrder.indexOf(sourceId);
     const targetIndex = currentOrder.indexOf(targetId);
-
+    
     // Ensure both columns are in the order array
-    if (sourceIndex === -1 || targetIndex === -1) {
-      return;
-    }
-
+    if (sourceIndex === -1 || targetIndex === -1) return;
+    
     // Create new order by moving the source column to the target position
     const newOrder = [...currentOrder];
     newOrder.splice(sourceIndex, 1);
     newOrder.splice(targetIndex, 0, sourceId);
-
+    
     // Update the column order
     table.setColumnOrder(newOrder);
   };
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      {/* Grip handle for dragging */}
-      <div
-        ref={gripRef}
-        draggable
-        onDragStart={handleGripDragStart}
-        onDragEnd={handleGripDragEnd}
-        onDragOver={handleGripDragOver}
-        onDrop={handleGripDrop}
-        className="cursor-grab hover:bg-gray-100 rounded p-1"
-        onClick={(e) => e.stopPropagation()}
+    <div 
+      className={cn("flex items-center gap-2", className)}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* We only make the grip handle draggable, not the entire header */}
+      {/* Drag handle */}
+      <div 
+        ref={dragHandleRef}
+        draggable="true"
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        className={cn(
+          "cursor-grab hover:bg-gray-100 rounded p-1 column-drag-handle",
+          isDragging ? "opacity-50" : ""
+        )}
+        title="Drag to reorder column"
       >
         <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
