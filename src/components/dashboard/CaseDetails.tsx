@@ -11,7 +11,7 @@ export function CaseDetails({
   const [loremIpsumExpanded, setLoremIpsumExpanded] = React.useState(false);
 
   return (
-    <div className="w-[20%] flex-shrink-0 border-l border-slate-800 overflow-y-auto h-screen">
+    <div className="w-[100%] flex-shrink-0 overflow-y-auto h-screen">
       <div className="p-4 flex items-center">
         <h2 className="text-white text-sm font-medium">Case Details</h2>
         <button className="text-[#058FFF] text-xs pl-2">Edit</button>

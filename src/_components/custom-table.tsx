@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client";
 import {
-  ColumnDef,
+  ColumnOrderState,
   OnChangeFn,
   SortingState,
   VisibilityState,
-  ColumnOrderState,
 } from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
 import * as React from "react";
@@ -21,6 +20,8 @@ import type {
   Filter,
 } from "@/types";
 
+import { CaseListHeader } from "@/components/case-list/CaseListHeader";
+import { useSearch } from "@/context/SearchContext";
 import { type CustomTask } from "../_lib/custom-data";
 import {
   GET_FILTER_DEFINITIONS,
@@ -29,11 +30,7 @@ import {
   GET_TASKS,
 } from "../_lib/queries";
 import { getCustomColumns } from "./custom-table-columns";
-import { useFeatureFlags } from "./feature-flags-provider";
-import TableActionButtons from "@/components/case-list/tableActionButton";
-import { CaseListHeader } from "@/components/case-list/CaseListHeader";
-import { CaseSearchFilter } from "@/components/case-list/CaseSearchFilter";
-import { useSearch } from "@/context/SearchContext";
+import { PreviewDialog } from "./preview-dialog";
 
 interface CustomTableProps {}
 
@@ -429,6 +426,23 @@ export function CustomTable({}: CustomTableProps) {
   }, [parsedSorting]);
 
   const [tasks, setTasks] = React.useState<CustomTask[]>([]);
+
+  // State for preview dialog
+  const [previewOpen, setPreviewOpen] = React.useState(false);
+  const [previewCaseId, setPreviewCaseId] = React.useState<string | null>(null);
+
+  // Handle row preview
+  const handlePreview = React.useCallback((row: CustomTask) => {
+    // If the same case is clicked again, close the preview
+    if (previewCaseId === row.id && previewOpen) {
+      setPreviewOpen(false);
+    } else {
+      // Otherwise, open the preview with the new case
+      setPreviewCaseId(row.id);
+      setPreviewOpen(true);
+    }
+  }, [previewCaseId, previewOpen]);
+
   // Fetch tasks using GraphQL with filters
   const { data, loading, error, refetch } = useQuery(GET_TASKS, {
     variables: {
@@ -511,8 +525,13 @@ export function CustomTable({}: CustomTableProps) {
   );
 
   const columns = React.useMemo(
-    () => getCustomColumns({ setRowAction, data: tasks[0] }),
-    [tasks]
+    () =>
+      getCustomColumns({
+        setRowAction,
+        data: tasks[0],
+        onPreview: handlePreview,
+      }),
+    [tasks, handlePreview, setRowAction]
   );
 
   // Handle selecting a saved filter
@@ -765,5 +784,14 @@ export function CustomTable({}: CustomTableProps) {
     [table, toolbar, tasks]
   );
 
-  return <>{dataTable}</>;
+  return (
+    <>
+      {dataTable}
+      <PreviewDialog
+        isOpen={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        caseId={previewCaseId}
+      />
+    </>
+  );
 }

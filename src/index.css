@@ -139,8 +139,11 @@
 .blur-box {
   backdrop-filter: blur(43px);
   -webkit-backdrop-filter: blur(43px);
-  background-color: rgba(0, 0, 0, 0.01);
+  background-color: rgba(0, 0, 0, 0.2);
   transform: translateZ(0);
+  will-change: transform; /* Helps with hardware acceleration */
+  isolation: isolate; /* Creates a new stacking context */
+  z-index: 1; /* Ensures proper stacking context */
 }
 
 /* Hide scrollbar for different browsers */
@@ -151,4 +154,27 @@
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
+}
+
+/* Slide in from right animation for sidebar preview */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.animate-slide-in-from-right {
+  animation: slideInFromRight 0.3s ease-out forwards;
 }

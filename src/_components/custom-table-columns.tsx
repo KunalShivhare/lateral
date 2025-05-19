@@ -1,8 +1,9 @@
 import { Column, ColumnDef } from "@tanstack/react-table";
-import { AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Eye, XCircle } from "lucide-react";
 import * as React from "react";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { type DataTableRowAction } from "@/types";
 import { type CustomTask } from "../_lib/custom-data";
@@ -12,6 +13,7 @@ interface GetColumnsProps {
     React.SetStateAction<DataTableRowAction<CustomTask> | null>
   >;
   data?: CustomTask;
+  onPreview?: (row: CustomTask) => void;
 }
 
 export function getStatusIcon(status: string) {
@@ -97,8 +99,38 @@ const getData = (data: CustomTask) => {
 export function getCustomColumns({
   setRowAction,
   data,
+  onPreview,
 }: GetColumnsProps): ColumnDef<CustomTask>[] {
   return [
+    {
+      id: "preview",
+      header: ({ table }) => (
+        <div className="text-center">Preview</div>
+      ),
+      cell: ({ row }) => (
+        <div
+          className="preview-container flex justify-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onPreview) {
+                onPreview(row.original);
+              }
+            }}
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 80, // Fixed width for preview column
+    },
     {
       id: "select",
       header: ({ table }) => (

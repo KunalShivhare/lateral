@@ -173,8 +173,9 @@ export function Dashboard() {
               <TabsArea />
             </div>
           </div>
-
-          <CaseDetails caseDetails={caseDetails} debtor={debtor} />
+          <div className="w-[25%] border-l border-slate-800 flex-shrink-0 overflow-y-auto h-screen">
+            <CaseDetails caseDetails={caseDetails} debtor={debtor} />
+          </div>
         </div>
       )}
     </PageLayout>
