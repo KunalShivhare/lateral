@@ -39,8 +39,15 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const navigate = useNavigate();
 
-  const handleRowClick = (caseId: string) => {
-    navigate(`/dashboard/${caseId}`);
+  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, caseId: string) => {
+    // Check if the click was on a checkbox or its label
+    const target = e.target as HTMLElement;
+    const isCheckbox = target.closest('input[type="checkbox"], .checkbox-container');
+    
+    // Only navigate if the click wasn't on a checkbox
+    if (!isCheckbox) {
+      navigate(`/dashboard/${caseId}`);
+    }
   };
   return (
     <div
@@ -80,7 +87,7 @@ export function DataTable<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => handleRowClick(row.original["id"])}
+                  onClick={(e) => handleRowClick(e, row.original["id"])}
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (

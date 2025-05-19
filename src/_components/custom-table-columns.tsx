@@ -105,12 +105,18 @@ export function getCustomColumns({
         />
       ),
       cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="translate-y-0.5 mx-auto"
-        />
+        <div className="checkbox-container" onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+            className="translate-y-0.5 mx-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              row.toggleSelected();
+            }}
+          />
+        </div>
       ),
       enableSorting: false,
       enableHiding: false,
