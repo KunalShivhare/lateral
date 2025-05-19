@@ -1,7 +1,7 @@
 const TableActionButtons = ({
   hasSelectedRows,
 }: {
-  hasSelectedRows: boolean;
+  hasSelectedRows?: boolean;
 }) => {
   return (
     <div className="flex items-center gap-2 mb-4 border-t border-b border-[#595959]">

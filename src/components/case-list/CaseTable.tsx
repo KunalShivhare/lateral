@@ -116,7 +116,7 @@ export function CaseTable() {
 
   return (
     <div className="space-y-4">
-      <TableActionButtons />
+      <TableActionButtons hasSelectedRows={true} />
 
       <div className="overflow-hidden">
         <Table className="w-full">
