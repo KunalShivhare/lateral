@@ -1,20 +1,16 @@
-import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { useNavigate, useParams } from "react-router-dom";
+import { GET_CASE_DETAILS } from "../../_lib/queries";
+import { PageLayout } from "../layout/PageLayout";
 import { CaseDetails } from "./CaseDetails";
 import { CaseHeader } from "./CaseHeader";
-import { LinkedRecords } from "./LinkedRecords";
-import { OpenInvoices } from "./OpenInvoices";
-import { PaymentPlan } from "./PaymentPlan";
-import { SettlementOffer } from "./SettlementOffer";
 import { TabsArea } from "./TabsArea";
-import { TaskList } from "./TaskList";
-import { PageLayout } from "../layout/PageLayout";
-import { useQuery } from "@apollo/client";
-import { GET_CASE_DETAILS } from "../../_lib/queries";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export function Dashboard() {
   const { caseId } = useParams();
   const navigate = useNavigate();
+  const [copied, setCopied] = useState(false);
   const { data, loading } = useQuery(GET_CASE_DETAILS, {
     variables: { case_id: caseId },
   });
@@ -48,7 +44,19 @@ export function Dashboard() {
                 </svg>
                 Back
               </button>
-              <div className="ml-auto text-sm text-[#BABABA]">#{caseId}</div>
+              <div 
+                className="ml-auto text-sm text-[#BABABA] cursor-pointer relative group"
+                onClick={() => {
+                  navigator.clipboard.writeText(caseId || '');
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+              >
+                #{caseId}
+                <span className="absolute left-1/2 -translate-x-1/2 -top-8 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                  {copied ? 'Copied!' : 'Click to copy'}
+                </span>
+              </div>
               <div className="flex ml-4 space-x-2">
                 <button className="p-1 hover:bg-slate-800 rounded text-white">
                   <svg
@@ -89,11 +97,6 @@ export function Dashboard() {
 
             <div className="py-6">
               <TabsArea />
-              <TaskList />
-              <PaymentPlan />
-              <LinkedRecords />
-              <OpenInvoices />
-              <SettlementOffer />
             </div>
           </div>
 

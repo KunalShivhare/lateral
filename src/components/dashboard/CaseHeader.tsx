@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { useState, useRef, useEffect } from "react";
 
 export function CaseHeader({
   debtor,
@@ -7,6 +8,29 @@ export function CaseHeader({
   debtor: any;
   caseDetails: any;
 }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+  const dropdownMenuRef = useRef<HTMLDivElement>(null);
+  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownButtonRef.current && 
+        !dropdownButtonRef.current.contains(event.target as Node) &&
+        dropdownMenuRef.current &&
+        !dropdownMenuRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+  
   return (
     <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg ">
       <div className="flex justify-between items-center px-3 pt-4">
@@ -248,26 +272,72 @@ export function CaseHeader({
             />
           </svg>
         </button>
-        <button className="p-2 text-slate-400 hover:bg-slate-800 rounded">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 16 16"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="#BABABA"
-            className="bi bi-three-dots-vertical"
+        <div className="relative">
+          <button 
+            className="p-2 text-slate-400 hover:bg-slate-800 rounded"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            ref={dropdownButtonRef}
           >
-            <g id="SVGRepo_bgCarrier" strokeWidth={0} />
-            <g
-              id="SVGRepo_tracerCarrier"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <g id="SVGRepo_iconCarrier">
-              <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-            </g>
-          </svg>
-        </button>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 16 16"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#BABABA"
+              className="bi bi-three-dots-vertical"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth={0} />
+              <g
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <g id="SVGRepo_iconCarrier">
+                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+              </g>
+            </svg>
+          </button>
+          
+          {dropdownOpen && (
+            <div ref={dropdownMenuRef} className="absolute right-0 mt-2 w-56 bg-[#1E1E1E] border border-[#3F3F3F] rounded-md shadow-lg z-10">
+              <div className="py-1">
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📋</span> Account Payments
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📧</span> Payment Plan
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📄</span> Letter
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📧</span> Adjust Debt
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📧</span> Case Participants
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">⏸️</span> Freeze Interest
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📧</span> Forms
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📁</span> Doc Bundling
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">📊</span> Income and Expense
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">👥</span> Make Joint Liability
+                </a>
+                <a href="#" className="flex items-center px-4 py-2 text-sm text-white hover:bg-slate-800">
+                  <span className="mr-2">≡</span> Variables List
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
