@@ -71,12 +71,18 @@ const getData = (data: CustomTask) => {
       id: key, // Ensure each column has a unique ID
       accessorKey: key,
       enableSorting: true, // Enable sorting for all columns
-      header: ({ column, table }: { column: Column<any, unknown>, table: any }) => (
+      header: ({
+        column,
+        table,
+      }: {
+        column: Column<any, unknown>;
+        table: any;
+      }) => (
         <DataTableColumnHeader column={column} title={title} table={table} />
       ),
       cell: ({ row }: { row: any }) => {
         return (
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-center ">
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue(key)}
             </span>
@@ -107,7 +113,10 @@ export function getCustomColumns({
         />
       ),
       cell: ({ row }) => (
-        <div className="checkbox-container" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="checkbox-container"
+          onClick={(e) => e.stopPropagation()}
+        >
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
