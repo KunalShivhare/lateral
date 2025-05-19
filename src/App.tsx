@@ -40,11 +40,11 @@ function App() {
             <Routes>
               <Route path="/dashboard/:caseId" element={<Dashboard />} />
               <Route path="/dashboard1" element={<Dashboard1 />} />
-              <Route path="/cases" element={<CaseList />} />
+              {/* <Route path="/cases" element={<CaseList />} /> */}
               <Route path="/customers" element={<Customers />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/reports" element={<Reports />} />
-              <Route path="/" element={<Navigate to="/cases" replace />} />
+              <Route path="/" element={<CaseList />} />
             </Routes>
           </BrowserRouter>
         </SearchProvider>
