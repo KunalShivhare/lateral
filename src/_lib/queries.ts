@@ -104,6 +104,7 @@ export const GET_CASE_DETAILS = gql`
       id
       date
       ref
+      cl_ref
       client_id
       scheme_id
       debtorid

@@ -36,10 +36,13 @@ export function CaseDetails({
         </div>
 
         <div className="flex items-center justify-between text-sm">
+          <span className="text-slate-400 text-xs">Account Number</span>
+          <span className="text-white text-xs">{caseDetails?.ref}</span>
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Account Number</span>
-          <span className="text-white text-xs">
-            {caseDetails?.client_account_number}
-          </span>
+          <span className="text-white text-xs">{caseDetails?.cl_ref}</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
