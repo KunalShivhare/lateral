@@ -81,7 +81,7 @@ export function Dashboard() {
             <div className="flex items-center mb-4 text-slate-400">
               <button
                 className="flex items-center p-1 hover:bg-slate-800 rounded text-white"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
