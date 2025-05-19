@@ -13,35 +13,35 @@ export function Dashboard() {
   const [copied, setCopied] = useState(false);
   const [prevCaseId, setPrevCaseId] = useState<string | null>(null);
   const [nextCaseId, setNextCaseId] = useState<string | null>(null);
-  
+
   const { data, loading } = useQuery(GET_CASE_DETAILS, {
     variables: { case_id: caseId },
   });
-  
+
   // Query to get adjacent cases
   const { data: adjacentCasesData } = useQuery(GET_ADJACENT_CASES, {
     variables: { current_id: caseId },
     skip: !caseId,
   });
-  
+
   // Update prev and next case IDs when data changes
   useEffect(() => {
     if (adjacentCasesData) {
       const prevCase = adjacentCasesData.prev_case?.[0];
       const nextCase = adjacentCasesData.next_case?.[0];
-      
+
       setPrevCaseId(prevCase ? prevCase.id : null);
       setNextCaseId(nextCase ? nextCase.id : null);
     }
   }, [adjacentCasesData]);
-  
+
   // Navigate to previous case
   const goToPrevCase = () => {
     if (prevCaseId) {
       navigate(`/dashboard/${prevCaseId}`);
     }
   };
-  
+
   // Navigate to next case
   const goToNextCase = () => {
     if (nextCaseId) {
@@ -53,13 +53,34 @@ export function Dashboard() {
   return (
     <PageLayout>
       {loading ? (
-        <>Loading...</>
+        <div className="flex items-center justify-center h-full w-full">
+          <svg
+            className="animate-spin h-12 w-12 text-[#058FFF]"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        </div>
       ) : (
         <div className="flex h-full">
           <div className="flex-1 overflow-y-auto p-6 hide-scrollbar">
             <div className="flex items-center mb-4 text-slate-400">
               <button
-                className="p-1 hover:bg-slate-800 rounded text-white"
+                className="flex items-center p-1 hover:bg-slate-800 rounded text-white"
                 onClick={() => navigate(-1)}
               >
                 <svg
@@ -76,27 +97,32 @@ export function Dashboard() {
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
-                Back
+                <span>Back</span>
               </button>
-              <div 
+
+              <div
                 className="ml-auto text-sm text-[#BABABA] cursor-pointer relative group"
                 onClick={() => {
-                  navigator.clipboard.writeText(caseId || '');
+                  navigator.clipboard.writeText(caseId || "");
                   setCopied(true);
                   setTimeout(() => setCopied(false), 2000);
                 }}
               >
                 #{caseId}
                 <span className="absolute left-1/2 -translate-x-1/2 -top-8 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                  {copied ? 'Copied!' : 'Click to copy'}
+                  {copied ? "Copied!" : "Click to copy"}
                 </span>
               </div>
               <div className="flex ml-4 space-x-2">
-                <button 
-                  className={`p-1 rounded text-white ${prevCaseId ? 'hover:bg-slate-800' : 'opacity-50 cursor-not-allowed'}`}
+                <button
+                  className={`p-1 rounded text-white ${
+                    prevCaseId
+                      ? "hover:bg-slate-800"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
                   onClick={goToPrevCase}
                   disabled={!prevCaseId}
-                  title={prevCaseId ? 'Previous case' : 'No previous case'}
+                  title={prevCaseId ? "Previous case" : "No previous case"}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -113,11 +139,15 @@ export function Dashboard() {
                     />
                   </svg>
                 </button>
-                <button 
-                  className={`p-1 rounded text-white ${nextCaseId ? 'hover:bg-slate-800' : 'opacity-50 cursor-not-allowed'}`}
+                <button
+                  className={`p-1 rounded text-white ${
+                    nextCaseId
+                      ? "hover:bg-slate-800"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
                   onClick={goToNextCase}
                   disabled={!nextCaseId}
-                  title={nextCaseId ? 'Next case' : 'No next case'}
+                  title={nextCaseId ? "Next case" : "No next case"}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
