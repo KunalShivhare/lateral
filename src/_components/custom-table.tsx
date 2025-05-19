@@ -436,7 +436,7 @@ export function CustomTable({}: CustomTableProps) {
       joinOperator,
       offset: Number(pageIndex) * Number(pageSize),
       limit: Number(pageSize),
-      orderBy: graphqlSorting,
+      // orderBy: graphqlSorting,
     },
     onCompleted: (data) => {
       setTasks(data.rdebt_cases);

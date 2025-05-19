@@ -5,7 +5,7 @@ export const GET_TASKS = gql`
     $filters: [rdebt_cases_bool_exp!] = {}
     $offset: Int = 0
     $limit: Int = 10
-    $orderBy: [rdebt_cases_order_by!] = [{ date: desc }]
+    $orderBy: [rdebt_cases_order_by!] = [{ id: asc }]
   ) {
     rdebt_cases(
       where: { _and: $filters }
@@ -125,6 +125,25 @@ export const GET_CASE_DETAILS = gql`
         debtor_employer_address
         debtor_trading_as
       }
+    }
+  }
+`;
+
+export const GET_ADJACENT_CASES = gql`
+  query GetAdjacentCases($current_id: String!, $limit: Int = 1) {
+    prev_case: rdebt_cases(
+      where: { id: { _lt: $current_id } }
+      order_by: { id: desc }
+      limit: $limit
+    ) {
+      id
+    }
+    next_case: rdebt_cases(
+      where: { id: { _gt: $current_id } }
+      order_by: { id: asc }
+      limit: $limit
+    ) {
+      id
     }
   }
 `;

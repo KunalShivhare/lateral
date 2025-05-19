@@ -1,19 +1,53 @@
 import { useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
-import { GET_CASE_DETAILS } from "../../_lib/queries";
+import { GET_CASE_DETAILS, GET_ADJACENT_CASES } from "../../_lib/queries";
 import { PageLayout } from "../layout/PageLayout";
 import { CaseDetails } from "./CaseDetails";
 import { CaseHeader } from "./CaseHeader";
 import { TabsArea } from "./TabsArea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Dashboard() {
   const { caseId } = useParams();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const [prevCaseId, setPrevCaseId] = useState<string | null>(null);
+  const [nextCaseId, setNextCaseId] = useState<string | null>(null);
+  
   const { data, loading } = useQuery(GET_CASE_DETAILS, {
     variables: { case_id: caseId },
   });
+  
+  // Query to get adjacent cases
+  const { data: adjacentCasesData } = useQuery(GET_ADJACENT_CASES, {
+    variables: { current_id: caseId },
+    skip: !caseId,
+  });
+  
+  // Update prev and next case IDs when data changes
+  useEffect(() => {
+    if (adjacentCasesData) {
+      const prevCase = adjacentCasesData.prev_case?.[0];
+      const nextCase = adjacentCasesData.next_case?.[0];
+      
+      setPrevCaseId(prevCase ? prevCase.id : null);
+      setNextCaseId(nextCase ? nextCase.id : null);
+    }
+  }, [adjacentCasesData]);
+  
+  // Navigate to previous case
+  const goToPrevCase = () => {
+    if (prevCaseId) {
+      navigate(`/dashboard/${prevCaseId}`);
+    }
+  };
+  
+  // Navigate to next case
+  const goToNextCase = () => {
+    if (nextCaseId) {
+      navigate(`/dashboard/${nextCaseId}`);
+    }
+  };
   const debtor = data?.rdebt_cases?.[0]?.debtor;
   const caseDetails = data?.rdebt_cases?.[0];
   return (
@@ -25,7 +59,7 @@ export function Dashboard() {
           <div className="flex-1 overflow-y-auto p-6 hide-scrollbar">
             <div className="flex items-center mb-4 text-slate-400">
               <button
-                className="flex items-center mr-4 text-white"
+                className="p-1 hover:bg-slate-800 rounded text-white"
                 onClick={() => navigate(-1)}
               >
                 <svg
@@ -58,7 +92,12 @@ export function Dashboard() {
                 </span>
               </div>
               <div className="flex ml-4 space-x-2">
-                <button className="p-1 hover:bg-slate-800 rounded text-white">
+                <button 
+                  className={`p-1 rounded text-white ${prevCaseId ? 'hover:bg-slate-800' : 'opacity-50 cursor-not-allowed'}`}
+                  onClick={goToPrevCase}
+                  disabled={!prevCaseId}
+                  title={prevCaseId ? 'Previous case' : 'No previous case'}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -74,7 +113,12 @@ export function Dashboard() {
                     />
                   </svg>
                 </button>
-                <button className="p-1 hover:bg-slate-800 rounded text-white">
+                <button 
+                  className={`p-1 rounded text-white ${nextCaseId ? 'hover:bg-slate-800' : 'opacity-50 cursor-not-allowed'}`}
+                  onClick={goToNextCase}
+                  disabled={!nextCaseId}
+                  title={nextCaseId ? 'Next case' : 'No next case'}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
