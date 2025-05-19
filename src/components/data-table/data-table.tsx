@@ -1,6 +1,8 @@
 import { type Table as TanstackTable, flexRender } from "@tanstack/react-table";
 import { ColumnReorderButton } from "./column-reorder-button";
 import type * as React from "react";
+import { useMemo } from "react";
+import TableActionButtons from "@/components/case-list/tableActionButton";
 
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import {
@@ -55,6 +57,9 @@ export function DataTable<TData>({
       navigate(`/dashboard/${caseId}`);
     }
   };
+  // Check if any rows are selected
+  const hasSelectedRows = table.getSelectedRowModel().rows.length > 0;
+
   return (
     <div
       className={cn("w-full space-y-2.5 overflow-auto", className)}
@@ -63,6 +68,9 @@ export function DataTable<TData>({
       <div className="flex items-center justify-between mb-4">
         <div className="flex-1">{children}</div>
       </div>
+
+      {/* Render TableActionButtons only when rows are selected */}
+      {<TableActionButtons hasSelectedRows={hasSelectedRows} />}
       <div className="overflow-hidden rounded-md h-[calc(100vh-280px)] flex flex-col">
         <Table className="h-full">
           <TableHeader className="sticky top-0 bg-background z-10">

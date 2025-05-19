@@ -759,7 +759,6 @@ export function CustomTable({}: CustomTableProps) {
           {/* <div className="flex justify-end">
           <ModeToggle />
           </div> */}
-          <TableActionButtons />
         </DataTable>
       </>
     ),
