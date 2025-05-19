@@ -68,9 +68,11 @@ const getData = (data: CustomTask) => {
     }
 
     return {
+      id: key, // Ensure each column has a unique ID
       accessorKey: key,
-      header: ({ column }: { column: Column<any, unknown> }) => (
-        <DataTableColumnHeader column={column} title={title} />
+      enableSorting: true, // Enable sorting for all columns
+      header: ({ column, table }: { column: Column<any, unknown>, table: any }) => (
+        <DataTableColumnHeader column={column} title={title} table={table} />
       ),
       cell: ({ row }: { row: any }) => {
         return (
@@ -125,8 +127,8 @@ export function getCustomColumns({
     ...(data ? getData(data) : []),
     // {
     //   accessorKey: "batch_id",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Batch ID" />
+    //   header: ({ column, table }) => (
+    //     <DataTableColumnHeader column={column} title="Batch ID" table={table} />
     //   ),
     //   cell: ({ row }) => (
     //     <div className="font-medium">{row.getValue("batch_id")}</div>

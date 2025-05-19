@@ -1,6 +1,7 @@
 import type { DataTableFilterField, ExtendedSortingState } from "@/types";
 import {
   type ColumnFiltersState,
+  type ColumnOrderState,
   type FilterFn,
   type PaginationState,
   type RowSelectionState,
@@ -189,8 +190,14 @@ export function useDataTable<TData>({
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
     initialState?.rowSelection ?? {},
   );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(
+    initialState?.columnVisibility ?? {}
+  );
+
+  // Column ordering state
+  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>(
+    initialState?.columnOrder ?? []
+  );
 
   const [page, setPage] = useQueryState(
     "page",
@@ -345,6 +352,7 @@ export function useDataTable<TData>({
       columnVisibility,
       rowSelection,
       columnFilters: enableAdvancedFilter ? [] : columnFilters,
+      columnOrder,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -352,6 +360,7 @@ export function useDataTable<TData>({
     onSortingChange,
     onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

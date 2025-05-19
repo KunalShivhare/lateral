@@ -4,6 +4,7 @@ import {
   OnChangeFn,
   SortingState,
   VisibilityState,
+  ColumnOrderState,
 } from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
 import * as React from "react";
@@ -20,7 +21,6 @@ import type {
   Filter,
 } from "@/types";
 
-import { ModeToggle } from "@/components/mode-toggle";
 import { type CustomTask } from "../_lib/custom-data";
 import {
   GET_FILTER_DEFINITIONS,
@@ -230,6 +230,9 @@ export function CustomTable({}: CustomTableProps) {
   // Track column visibility state with no initial hidden columns
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+
+  // Column ordering state
+  const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
 
   // Table reference to be used in callbacks
   const tableRef = React.useRef<any>(null);
@@ -531,6 +534,31 @@ export function CustomTable({}: CustomTableProps) {
     }
   }, []);
 
+  // Initialize column order when columns change
+  React.useEffect(() => {
+    if (columns.length > 0) {
+      // Set initial column order based on column ids
+      const initialColumnOrder = columns
+        .map((column) => {
+          // Get the column ID - each column should have an id
+          if (typeof column.id === "string") {
+            return column.id;
+          }
+          // If no id, try to get the accessorKey if it exists
+          if (
+            "accessorKey" in column &&
+            typeof column.accessorKey === "string"
+          ) {
+            return column.accessorKey;
+          }
+          return "";
+        })
+        .filter((id) => id !== ""); // Filter out any empty ids
+
+      setColumnOrder(initialColumnOrder);
+    }
+  }, [columns]);
+
   // Memoize the table configuration
   const tableConfig = React.useMemo(
     () => ({
@@ -554,13 +582,26 @@ export function CustomTable({}: CustomTableProps) {
           pageIndex: Number(pageIndex),
           pageSize: Number(pageSize),
         },
-        columnVisibility: columnVisibility,
+        columnVisibility,
+        columnOrder,
       },
-
+      state: {
+        sorting: parsedSorting,
+        pagination: {
+          pageIndex,
+          pageSize: Number(pageSize),
+        },
+        columnVisibility,
+        columnOrder,
+      },
+      // Enable column resizing with a valid mode
+      enableColumnResizing: true,
+      columnResizeMode: "onEnd" as const,
+      // Enable column reordering
+      enableColumnDragging: true,
       getRowId: (originalRow: CustomTask) => originalRow.id,
       shallow: false,
       clearOnDefault: true,
-      clientSideFiltering: false,
       serverSideFiltering: false,
       enableSorting: true,
       enableMultiSort: true,
@@ -600,6 +641,13 @@ export function CustomTable({}: CustomTableProps) {
 
         setColumnVisibility(updatedVisibility);
       },
+      onColumnOrderChange: (updater: any) => {
+        // Handle both function updater and direct value
+        const updatedColumnOrder =
+          typeof updater === "function" ? updater(columnOrder) : updater;
+
+        setColumnOrder(updatedColumnOrder);
+      },
     }),
     [
       tasks,
@@ -615,6 +663,7 @@ export function CustomTable({}: CustomTableProps) {
       handleSortingChange,
       graphqlSorting,
       columnVisibility,
+      columnOrder,
     ]
   );
 

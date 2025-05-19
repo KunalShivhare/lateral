@@ -1,4 +1,5 @@
 import { type Table as TanstackTable, flexRender } from "@tanstack/react-table";
+import { ColumnReorderButton } from "./column-reorder-button";
 import type * as React from "react";
 
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
@@ -39,11 +40,16 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const navigate = useNavigate();
 
-  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, caseId: string) => {
+  const handleRowClick = (
+    e: React.MouseEvent<HTMLTableRowElement>,
+    caseId: string
+  ) => {
     // Check if the click was on a checkbox or its label
     const target = e.target as HTMLElement;
-    const isCheckbox = target.closest('input[type="checkbox"], .checkbox-container');
-    
+    const isCheckbox = target.closest(
+      'input[type="checkbox"], .checkbox-container'
+    );
+
     // Only navigate if the click wasn't on a checkbox
     if (!isCheckbox) {
       navigate(`/dashboard/${caseId}`);
@@ -54,7 +60,9 @@ export function DataTable<TData>({
       className={cn("w-full space-y-2.5 overflow-auto", className)}
       {...props}
     >
-      {children}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex-1">{children}</div>
+      </div>
       <div className="overflow-hidden rounded-md h-[calc(100vh-280px)] flex flex-col">
         <Table className="h-full">
           <TableHeader className="sticky top-0 bg-background z-10">
@@ -67,14 +75,16 @@ export function DataTable<TData>({
                       colSpan={header.colSpan}
                       style={{
                         ...getCommonPinningStyles({ column: header.column }),
+                        cursor: header.column.getCanSort() ? "grab" : "default",
                       }}
+                      className="group"
                     >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : flexRender(header.column.columnDef.header, {
+                            ...header.getContext(),
+                            table,
+                          })}
                     </TableHead>
                   );
                 })}
