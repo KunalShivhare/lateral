@@ -432,16 +432,19 @@ export function CustomTable({}: CustomTableProps) {
   const [previewCaseId, setPreviewCaseId] = React.useState<string | null>(null);
 
   // Handle row preview
-  const handlePreview = React.useCallback((row: CustomTask) => {
-    // If the same case is clicked again, close the preview
-    if (previewCaseId === row.id && previewOpen) {
-      setPreviewOpen(false);
-    } else {
-      // Otherwise, open the preview with the new case
-      setPreviewCaseId(row.id);
-      setPreviewOpen(true);
-    }
-  }, [previewCaseId, previewOpen]);
+  const handlePreview = React.useCallback(
+    (row: CustomTask) => {
+      // If the same case is clicked again, close the preview
+      if (previewCaseId === row.id && previewOpen) {
+        setPreviewOpen(false);
+      } else {
+        // Otherwise, open the preview with the new case
+        setPreviewCaseId(row.id);
+        setPreviewOpen(true);
+      }
+    },
+    [previewCaseId, previewOpen]
+  );
 
   // Fetch tasks using GraphQL with filters
   const { data, loading, error, refetch } = useQuery(GET_TASKS, {
@@ -578,14 +581,23 @@ export function CustomTable({}: CustomTableProps) {
     }
   }, [columns]);
 
+  console.log(
+    "🚀 ~ CustomTable ~ data:",
+    data?.rdebt_cases_aggregate?.aggregate?.count,
+    Number(pageIndex) * Number(pageSize),
+    pageSize
+  );
+
   // Memoize the table configuration
   const tableConfig = React.useMemo(
     () => ({
       data: tasks,
       columns: columns,
-      pageCount: Math.ceil(
-        (data?.rdebt_cases_aggregate?.aggregate?.count ?? 0) / Number(pageSize)
-      ),
+      pageCount: data?.rdebt_cases_aggregate?.aggregate?.count
+        ? Math.ceil(
+            data.rdebt_cases_aggregate.aggregate.count / Number(pageSize)
+          )
+        : 0,
       filterFields: filterFields,
       enableAdvancedFilter: enableAdvancedTable,
       advancedFilterFields: advancedFilterFields,

@@ -1,4 +1,5 @@
 import type { Table } from "@tanstack/react-table";
+import { useState, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -32,6 +34,37 @@ export function DataTablePagination<TData>({
   table,
   pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTablePaginationProps<TData>) {
+  // State for the custom page input
+  const [customPageInput, setCustomPageInput] = useState<string>(
+    `${table.getState().pagination.pageIndex + 1}`
+  );
+
+  // Update the input when the page changes
+  useEffect(() => {
+    setCustomPageInput(`${table.getState().pagination.pageIndex + 1}`);
+  }, [table.getState().pagination.pageIndex]);
+
+  // Handle custom page navigation
+  const handleGoToPage = () => {
+    const pageNumber = parseInt(customPageInput, 10);
+    if (
+      !isNaN(pageNumber) &&
+      pageNumber > 0 &&
+      pageNumber <= table.getPageCount()
+    ) {
+      const newPageIndex = pageNumber - 1; // Convert to 0-based index
+      table.setPageIndex(newPageIndex);
+      if (table.options.onPaginationChange) {
+        table.options.onPaginationChange({
+          pageIndex: newPageIndex,
+          pageSize: table.getState().pagination.pageSize,
+        });
+      }
+    } else {
+      // Reset to current page if invalid input
+      setCustomPageInput(`${table.getState().pagination.pageIndex + 1}`);
+    }
+  };
   return (
     <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
       <div className="flex-1 whitespace-nowrap text-muted-foreground text-sm">
@@ -63,9 +96,26 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center justify-center font-medium text-sm">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
+        <div className="flex items-center justify-center space-x-2">
+          <span className="font-medium text-sm">Page</span>
+          <div className="flex items-center space-x-1">
+            <Input
+              type="text"
+              value={customPageInput}
+              onChange={(e) => setCustomPageInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleGoToPage();
+                }
+              }}
+              onBlur={handleGoToPage}
+              className="h-8 w-12 text-center"
+            />
+            <span className="font-medium text-sm">
+              of {table.getPageCount()}
+            </span>
+          </div>
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -110,6 +160,7 @@ export function DataTablePagination<TData>({
             className="size-8"
             onClick={() => {
               table.nextPage();
+              console.log("s", table.getState().pagination.pageIndex + 1);
               if (table.options.onPaginationChange) {
                 table.options.onPaginationChange({
                   pageIndex: table.getState().pagination.pageIndex + 1,
