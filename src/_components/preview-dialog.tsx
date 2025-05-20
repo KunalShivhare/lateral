@@ -117,6 +117,15 @@ export function PreviewDialog({ isOpen, onClose, caseId }: PreviewDialogProps) {
               <CaseDetails caseDetails={caseDetails} debtor={debtor} />
             </div>
           </div>
+          {/* Fixed View Record button at the bottom */}
+          <div className="sticky bottom-0 w-full p-4 bg-[#1a1a1a] border-t border-[#3F3F3F] flex justify-center">
+            <button
+              onClick={() => navigate(`/dashboard/${caseId}`)}
+              className="px-6 py-2 bg-[#058FFF] text-white rounded-md hover:bg-[#0470cc] transition-colors font-medium flex items-center justify-center"
+            >
+              View Record
+            </button>
+          </div>
         </>
       )}
     </div>
