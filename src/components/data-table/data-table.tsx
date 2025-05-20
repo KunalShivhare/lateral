@@ -144,6 +144,7 @@ export function DataTable<TData>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   onClick={(e) => handleRowClick(e, row.original["id"])}
+                  className="data-table-row"
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (

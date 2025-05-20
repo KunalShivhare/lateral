@@ -139,6 +139,14 @@
 .blur-box {
   backdrop-filter: blur(43px);
   -webkit-backdrop-filter: blur(43px);
+}
+
+/* Custom class for row hover effects */
+.data-table-row:hover .row-hover\:opacity-100 {
+  opacity: 1 !important;
+}
+
+.blur-box {
   background-color: rgba(0, 0, 0, 0.2);
   transform: translateZ(0);
   will-change: transform; /* Helps with hardware acceleration */
