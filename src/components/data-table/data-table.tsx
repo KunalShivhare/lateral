@@ -1,4 +1,9 @@
-import { type Table as TanstackTable, flexRender } from "@tanstack/react-table";
+import {
+  type Table as TanstackTable,
+  flexRender,
+  type ColumnDef,
+} from "@tanstack/react-table";
+import { type ColumnMeta } from "@/types";
 import { ColumnReorderButton } from "./column-reorder-button";
 import type * as React from "react";
 import { useMemo } from "react";
@@ -83,7 +88,40 @@ export function DataTable<TData>({
                       colSpan={header.colSpan}
                       style={{
                         ...getCommonPinningStyles({ column: header.column }),
-                        cursor: header.column.getCanSort() ? "grab" : "default",
+                        cursor:
+                          header.column.getCanSort() &&
+                          !(header.column.columnDef.meta as ColumnMeta<TData>)
+                            ?.fixed
+                            ? "grab"
+                            : "default",
+                        position: (
+                          header.column.columnDef.meta as ColumnMeta<TData>
+                        )?.fixed
+                          ? "sticky"
+                          : undefined,
+                        left: (
+                          header.column.columnDef.meta as ColumnMeta<TData>
+                        )?.fixed
+                          ? (header.column.columnDef.meta as ColumnMeta<TData>)
+                              ?.position === 0
+                            ? 0
+                            : (
+                                header.column.columnDef
+                                  .meta as ColumnMeta<TData>
+                              )?.position === 1
+                            ? 24
+                            : 0
+                          : undefined,
+                        zIndex: (
+                          header.column.columnDef.meta as ColumnMeta<TData>
+                        )?.fixed
+                          ? 20
+                          : undefined,
+                        backgroundColor: (
+                          header.column.columnDef.meta as ColumnMeta<TData>
+                        )?.fixed
+                          ? "var(--background)"
+                          : undefined,
                       }}
                       className="group"
                     >
@@ -113,6 +151,47 @@ export function DataTable<TData>({
                         key={cell.id}
                         style={{
                           ...getCommonPinningStyles({ column: cell.column }),
+                          position: (
+                            cell.column.columnDef.meta as ColumnMeta<TData>
+                          )?.fixed
+                            ? "sticky"
+                            : undefined,
+                          left: (
+                            cell.column.columnDef.meta as ColumnMeta<TData>
+                          )?.fixed
+                            ? (cell.column.columnDef.meta as ColumnMeta<TData>)
+                                ?.position === 0
+                              ? 0
+                              : (
+                                  cell.column.columnDef
+                                    .meta as ColumnMeta<TData>
+                                )?.position === 1
+                              ? 24
+                              : 0
+                            : undefined,
+                          paddingLeft: (
+                            cell.column.columnDef.meta as ColumnMeta<TData>
+                          )?.fixed
+                            ? (cell.column.columnDef.meta as ColumnMeta<TData>)
+                                ?.position === 0
+                              ? 0
+                              : (
+                                  cell.column.columnDef
+                                    .meta as ColumnMeta<TData>
+                                )?.position === 1
+                              ? 24
+                              : 0
+                            : undefined,
+                          zIndex: (
+                            cell.column.columnDef.meta as ColumnMeta<TData>
+                          )?.fixed
+                            ? 10
+                            : undefined,
+                          backgroundColor: (
+                            cell.column.columnDef.meta as ColumnMeta<TData>
+                          )?.fixed
+                            ? "#0D2532"
+                            : undefined,
                         }}
                       >
                         {flexRender(

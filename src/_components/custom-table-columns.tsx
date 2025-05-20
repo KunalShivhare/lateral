@@ -44,7 +44,7 @@ export function getPriorityIcon(priority: string) {
   }
 }
 
-const getData = (data: CustomTask) => {
+const getData = (data: CustomTask, onPreview?: (row: CustomTask) => void) => {
   const keys = Object.keys(data).filter((key) => key !== "__typename");
   return keys.map((key) => {
     const title = key
@@ -67,6 +67,52 @@ const getData = (data: CustomTask) => {
       } else if (value.length > 50) {
         initialSize = 250; // Long text needs more space
       }
+    }
+
+    // Special handling for ID column
+    if (key === "id") {
+      return {
+        id: key,
+        accessorKey: key,
+        enableSorting: true,
+        enableColumnFilter: true,
+        enableHiding: false,
+        enablePinning: true,
+        enableResizing: true,
+        enableGlobalFilter: true,
+        // Make ID column not rearrangeable by setting custom header
+        header: ({
+          column,
+          table,
+        }: {
+          column: Column<any, unknown>;
+          table: any;
+        }) => <div className="text-center font-medium">{title}</div>,
+        cell: ({ row }: { row: any }) => {
+          return (
+            <div className="flex items-center space-x-2 group">
+              <span className="truncate font-medium">{row.getValue(key)}</span>
+              <span
+                className="ml-2 pl-2 text-xs text-blue-500 hover:text-blue-700 hover:underline cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (row.original && typeof onPreview === "function") {
+                    onPreview(row.original);
+                  }
+                }}
+              >
+                Preview
+              </span>
+            </div>
+          );
+        },
+        size: initialSize,
+        // Make ID column fixed
+        meta: {
+          fixed: true,
+          position: 1, // Position 1 for ID column (after checkbox)
+        },
+      };
     }
 
     return {
@@ -103,35 +149,6 @@ export function getCustomColumns({
 }: GetColumnsProps): ColumnDef<CustomTask>[] {
   return [
     {
-      id: "preview",
-      header: ({ table }) => (
-        <div className="text-center">Preview</div>
-      ),
-      cell: ({ row }) => (
-        <div
-          className="preview-container flex justify-center"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onPreview) {
-                onPreview(row.original);
-              }
-            }}
-          >
-            <Eye className="h-4 w-4" />
-          </Button>
-        </div>
-      ),
-      enableSorting: false,
-      enableHiding: false,
-      size: 80, // Fixed width for preview column
-    },
-    {
       id: "select",
       header: ({ table }) => (
         <Checkbox
@@ -141,19 +158,19 @@ export function getCustomColumns({
           )}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="translate-y-0.5 mx-auto"
+          className="translate-y-0.5 mx-auto border-[#BABABA] border"
         />
       ),
       cell: ({ row }) => (
         <div
-          className="checkbox-container"
+          className="checkbox-container pl-2"
           onClick={(e) => e.stopPropagation()}
         >
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
-            className="translate-y-0.5 mx-auto"
+            className="translate-y-0.5 mx-auto border-[#BABABA] border"
             onClick={(e) => {
               e.stopPropagation();
               row.toggleSelected();
@@ -163,9 +180,14 @@ export function getCustomColumns({
       ),
       enableSorting: false,
       enableHiding: false,
+      enablePinning: true,
       size: 60, // Fixed width for selection column
+      meta: {
+        fixed: true,
+        position: 0,
+      },
     },
-    ...(data ? getData(data) : []),
+    ...(data ? getData(data, onPreview) : []),
     // {
     //   accessorKey: "batch_id",
     //   header: ({ column, table }) => (

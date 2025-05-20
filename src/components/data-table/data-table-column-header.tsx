@@ -1,5 +1,6 @@
 import { SelectIcon } from "@radix-ui/react-select";
 import type { Column, Table } from "@tanstack/react-table";
+import { type ColumnMeta } from "@/types";
 import {
   ArrowDown,
   ArrowUp,

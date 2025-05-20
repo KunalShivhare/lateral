@@ -63,3 +63,9 @@ export interface QueryBuilderOpts {
   distinct?: boolean;
   nullish?: boolean;
 }
+
+// Define custom column meta properties
+export interface ColumnMeta<TData> {
+  fixed?: boolean;
+  position?: number;
+}
