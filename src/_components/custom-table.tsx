@@ -780,20 +780,93 @@ export function CustomTable({}: CustomTableProps) {
     refetchSavedViews,
   ]);
 
+  // Handle create new view
+  const handleCreateView = React.useCallback(() => {
+    // Implement create new view functionality
+    // This should open a modal or form to create a new view
+    console.log("Creating new view with current table state");
+    // You could save the current column order, visibility, and filters
+    const viewData = {
+      columnOrder,
+      columnVisibility,
+      filters: advancedFilters,
+      sorting: parsedSorting,
+    };
+    console.log("View data to save:", viewData);
+    // Here you would typically open a modal to name the view
+    // Then save it using a mutation
+  }, [columnOrder, columnVisibility, advancedFilters, parsedSorting]);
+
+  // Handle select view
+  const handleSelectView = React.useCallback(
+    (viewId: string) => {
+      // Find the selected view
+      const selectedView = savedViewsData?.user_views.find(
+        (view: any) => view.id === viewId
+      );
+      if (selectedView && selectedView.views) {
+        console.log("Applying view:", selectedView.view_name);
+        // Apply the view settings to the table
+        try {
+          const viewData = selectedView.views;
+          // Apply column order if available
+          if (viewData.columnOrder) {
+            setColumnOrder(viewData.columnOrder);
+          }
+          // Apply column visibility if available
+          if (viewData.columnVisibility) {
+            setColumnVisibility(viewData.columnVisibility);
+          }
+          // Apply filters if available
+          if (viewData.filters) {
+            setAdvancedFilters(viewData.filters);
+          }
+          // Apply sorting if available
+          if (viewData.sorting) {
+            setSorting(JSON.stringify(viewData.sorting));
+          }
+        } catch (error) {
+          console.error("Error applying view:", error);
+        }
+      }
+    },
+    [
+      savedViewsData,
+      setColumnOrder,
+      setColumnVisibility,
+      setAdvancedFilters,
+      setSorting,
+    ]
+  );
+
   // Memoize the entire DataTable to prevent re-renders
   const dataTable = React.useMemo(
     () => (
       <>
         <CaseListHeader />
         {toolbar}
-        <DataTable table={table}>
+        <DataTable
+          table={table}
+          savedViews={savedViewsData?.user_views || []}
+          viewsLoading={viewsLoading}
+          onCreateView={handleCreateView}
+          onSelectView={handleSelectView}
+        >
           {/* <div className="flex justify-end">
           <ModeToggle />
           </div> */}
         </DataTable>
       </>
     ),
-    [table, toolbar, tasks]
+    [
+      table,
+      toolbar,
+      tasks,
+      savedViewsData,
+      viewsLoading,
+      handleCreateView,
+      handleSelectView,
+    ]
   );
 
   return (

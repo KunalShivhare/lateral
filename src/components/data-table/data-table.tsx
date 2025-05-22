@@ -36,12 +36,40 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
   floatingBar?: React.ReactNode | null;
+
+  /**
+   * Saved views
+   * @type any[]
+   */
+  savedViews?: any[];
+
+  /**
+   * Whether views are loading
+   * @type boolean
+   */
+  viewsLoading?: boolean;
+
+  /**
+   * Function to call when creating a new view
+   * @type () => void
+   */
+  onCreateView?: () => void;
+
+  /**
+   * Function to call when selecting a view
+   * @type (viewId: string) => void
+   */
+  onSelectView?: (viewId: string) => void;
 }
 
 export function DataTable<TData>({
   table,
-  floatingBar = null,
   children,
+  savedViews = [],
+  viewsLoading = false,
+  onCreateView,
+  onSelectView,
+  floatingBar = null,
   className,
   ...props
 }: DataTableProps<TData>) {
@@ -75,7 +103,13 @@ export function DataTable<TData>({
       </div>
 
       {/* Render TableActionButtons only when rows are selected */}
-      {<TableActionButtons hasSelectedRows={hasSelectedRows} />}
+      {<TableActionButtons 
+        hasSelectedRows={hasSelectedRows}
+        savedViews={savedViews}
+        viewsLoading={viewsLoading}
+        onCreateView={onCreateView}
+        onSelectView={onSelectView}
+      />}
       <div className="overflow-hidden rounded-md h-[calc(100vh-280px)] flex flex-col">
         <Table className="h-full">
           <TableHeader className="sticky top-0 bg-background z-10">
