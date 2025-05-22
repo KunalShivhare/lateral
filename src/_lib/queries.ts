@@ -148,3 +148,13 @@ export const GET_ADJACENT_CASES = gql`
     }
   }
 `;
+
+export const GET_TABLE_SCHEMA = gql`
+  query GET_TABLE_SCHEMA($tableName: String!) {
+    __type(name: $tableName) {
+      fields {
+        name
+      }
+    }
+  }
+`;
