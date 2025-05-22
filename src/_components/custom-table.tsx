@@ -31,6 +31,7 @@ import {
 } from "../_lib/queries";
 import { getCustomColumns } from "./custom-table-columns";
 import { PreviewDialog } from "./preview-dialog";
+import { Button } from "@/components/ui/button";
 
 interface CustomTableProps {}
 
@@ -581,13 +582,6 @@ export function CustomTable({}: CustomTableProps) {
     }
   }, [columns]);
 
-  console.log(
-    "🚀 ~ CustomTable ~ data:",
-    data?.rdebt_cases_aggregate?.aggregate?.count,
-    Number(pageIndex) * Number(pageSize),
-    pageSize
-  );
-
   // Memoize the table configuration
   const tableConfig = React.useMemo(
     () => ({
@@ -672,13 +666,6 @@ export function CustomTable({}: CustomTableProps) {
 
         setColumnVisibility(updatedVisibility);
       },
-      onColumnOrderChange: (updater: any) => {
-        // Handle both function updater and direct value
-        const updatedColumnOrder =
-          typeof updater === "function" ? updater(columnOrder) : updater;
-
-        setColumnOrder(updatedColumnOrder);
-      },
     }),
     [
       tasks,
@@ -730,9 +717,28 @@ export function CustomTable({}: CustomTableProps) {
                 columnVisibility={table.getState().columnVisibility} 
                 onSave={() => refetchSavedViews()} 
               />
-              <Button 
-                variant="outline" 
-                size="sm" 
+              </div>
+              </div> */}
+          <div className="flex justify-between items-center mb-2">
+            <CustomAdvancedToolbar
+              table={table}
+              filterFields={advancedFilterFields}
+              initialFilters={advancedFilters}
+              onApply={applyFilters}
+              onReset={() => {
+                setAdvancedFilters([]);
+                refetch({
+                  filters: {},
+                  joinOperator,
+                  offset: 0,
+                  limit: Number(pageSize),
+                });
+              }}
+            />
+            {Object.keys(columnVisibility).length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => {
                   // Reset column visibility to show all columns
                   setColumnVisibility({});
@@ -741,24 +747,8 @@ export function CustomTable({}: CustomTableProps) {
               >
                 Reset View
               </Button>
-            </div>
-          </div> */}
-
-          <CustomAdvancedToolbar
-            table={table}
-            filterFields={advancedFilterFields}
-            initialFilters={advancedFilters}
-            onApply={applyFilters}
-            onReset={() => {
-              setAdvancedFilters([]);
-              refetch({
-                filters: {},
-                joinOperator,
-                offset: 0,
-                limit: Number(pageSize),
-              });
-            }}
-          />
+            )}
+          </div>
         </div>
       );
     } else {
@@ -809,18 +799,18 @@ export function CustomTable({}: CustomTableProps) {
         // Apply the view settings to the table
         try {
           const viewData = selectedView.views;
+          // Apply the new visibility state
+          handleSavedViewSelect(viewData);
           // Apply column order if available
           if (viewData.columnOrder) {
             setColumnOrder(viewData.columnOrder);
           }
-          // Apply column visibility if available
-          if (viewData.columnVisibility) {
-            setColumnVisibility(viewData.columnVisibility);
-          }
+
           // Apply filters if available
           if (viewData.filters) {
             setAdvancedFilters(viewData.filters);
           }
+
           // Apply sorting if available
           if (viewData.sorting) {
             setSorting(JSON.stringify(viewData.sorting));
@@ -833,7 +823,7 @@ export function CustomTable({}: CustomTableProps) {
     [
       savedViewsData,
       setColumnOrder,
-      setColumnVisibility,
+      handleSavedViewSelect,
       setAdvancedFilters,
       setSorting,
     ]
