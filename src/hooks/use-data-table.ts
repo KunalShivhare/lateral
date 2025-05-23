@@ -265,6 +265,9 @@ export function useDataTable<TData>({
     if (typeof updaterOrValue === "function") {
       const newSorting = updaterOrValue(sorting) as ExtendedSortingState<TData>;
       void setSorting(newSorting);
+    } else {
+      // Handle direct value assignment
+      void setSorting(updaterOrValue as ExtendedSortingState<TData>);
     }
   }
 

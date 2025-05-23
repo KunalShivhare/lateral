@@ -24,6 +24,7 @@ interface DataTableColumnHeaderProps<TData, TValue>
   column: Column<TData, TValue>;
   title: string;
   table: Table<TData>;
+  handleSortingChange?: (sorting: any) => void;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
@@ -31,6 +32,7 @@ export function DataTableColumnHeader<TData, TValue>({
   title,
   table,
   className,
+  handleSortingChange,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort() && !column.getCanHide()) {
     return <div className={cn(className)}>{title}</div>;
@@ -187,10 +189,21 @@ export function DataTableColumnHeader<TData, TValue>({
             : noneValue
         }
         onValueChange={(value) => {
-          if (value === ascValue) column.toggleSorting(false);
-          else if (value === descValue) column.toggleSorting(true);
-          else if (value === hideValue) column.toggleVisibility(false);
-          else if (value === noneValue) column.clearSorting();
+          handleSortingChange(value);
+          if (value === ascValue) {
+            column.toggleSorting(false);
+            // Force table to update sorting state
+            table.setSorting(table.getState().sorting);
+          } else if (value === descValue) {
+            column.toggleSorting(true);
+            // Force table to update sorting state
+            table.setSorting(table.getState().sorting);
+          } else if (value === hideValue) column.toggleVisibility(false);
+          else if (value === noneValue) {
+            column.clearSorting();
+            // Force table to update sorting state
+            table.setSorting([]);
+          }
         }}
       >
         <SelectTrigger
@@ -202,10 +215,24 @@ export function DataTableColumnHeader<TData, TValue>({
               : "Not sorted. Click to sort ascending."
           }
           className="h-8 w-fit shadow-none dark:bg-transparent border-none text-xs [&>svg:last-child]:hidden"
+          onClick={() => {
+            if (column.getCanSort()) {
+              // Toggle sorting directly when clicking on the header
+              if (column.getIsSorted() === "asc") {
+                column.toggleSorting(true); // Switch to descending
+              } else if (column.getIsSorted() === "desc") {
+                column.clearSorting(); // Clear sorting
+              } else {
+                column.toggleSorting(false); // Start with ascending
+              }
+              // Force table to update sorting state
+              table.setSorting(table.getState().sorting);
+            }
+          }}
         >
           <div className="flex justify-between gap-2">
             <span className="text-xs">{title}</span>
-            {/* <SelectIcon asChild>
+            <SelectIcon asChild>
               {column.getCanSort() && column.getIsSorted() === "desc" ? (
                 <ArrowDown className="ml-2.5 size-4" aria-hidden="true" />
               ) : column.getIsSorted() === "asc" ? (
@@ -213,10 +240,10 @@ export function DataTableColumnHeader<TData, TValue>({
               ) : (
                 <ChevronsUpDown className="ml-2.5 size-4" aria-hidden="true" />
               )}
-            </SelectIcon> */}
+            </SelectIcon>
           </div>
         </SelectTrigger>
-        {/* <SelectContent align="start">
+        <SelectContent align="start">
           {column.getCanSort() && (
             <>
               <SelectItem value={ascValue}>
@@ -248,7 +275,7 @@ export function DataTableColumnHeader<TData, TValue>({
               </SelectItem>
             </>
           )}
-          {column.getCanHide() && (
+          {/* {column.getCanHide() && (
             <SelectItem value={hideValue}>
               <span className="flex items-center">
                 <EyeOff
@@ -258,8 +285,8 @@ export function DataTableColumnHeader<TData, TValue>({
                 Hide
               </span>
             </SelectItem>
-          )}
-        </SelectContent> */}
+          )} */}
+        </SelectContent>
       </Select>
     </div>
   );

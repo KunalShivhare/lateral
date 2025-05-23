@@ -5,7 +5,7 @@ export const GET_TASKS = gql`
     $filters: [rdebt_cases_bool_exp!] = {}
     $offset: Int = 0
     $limit: Int = 10
-    $orderBy: [rdebt_cases_order_by!] = [{ id: asc }]
+    $orderBy: [rdebt_cases_order_by!]
   ) {
     rdebt_cases(
       where: { _and: $filters }

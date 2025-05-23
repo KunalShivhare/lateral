@@ -14,6 +14,7 @@ interface GetColumnsProps {
   >;
   data?: CustomTask;
   onPreview?: (row: CustomTask) => void;
+  handleSortingChange?: (sorting: any) => void;
 }
 
 export function getStatusIcon(status: string) {
@@ -44,7 +45,11 @@ export function getPriorityIcon(priority: string) {
   }
 }
 
-const getData = (data: CustomTask, onPreview?: (row: CustomTask) => void) => {
+const getData = (
+  data: CustomTask,
+  onPreview?: (row: CustomTask) => void,
+  handleSortingChange?: (sorting: any) => void
+) => {
   const keys = Object.keys(data).filter((key) => key !== "__typename");
   return keys.map((key) => {
     const title = key
@@ -126,7 +131,12 @@ const getData = (data: CustomTask, onPreview?: (row: CustomTask) => void) => {
         column: Column<any, unknown>;
         table: any;
       }) => (
-        <DataTableColumnHeader column={column} title={title} table={table} />
+        <DataTableColumnHeader
+          column={column}
+          title={title}
+          table={table}
+          handleSortingChange={handleSortingChange}
+        />
       ),
       cell: ({ row }: { row: any }) => {
         return (
@@ -146,6 +156,7 @@ export function getCustomColumns({
   setRowAction,
   data,
   onPreview,
+  handleSortingChange,
 }: GetColumnsProps): ColumnDef<CustomTask>[] {
   return [
     {
@@ -187,7 +198,7 @@ export function getCustomColumns({
         position: 0,
       },
     },
-    ...(data ? getData(data, onPreview) : []),
+    ...(data ? getData(data, onPreview, handleSortingChange) : []),
     // {
     //   accessorKey: "batch_id",
     //   header: ({ column, table }) => (

@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
@@ -215,9 +215,9 @@ export function CustomTable({}: CustomTableProps) {
   });
 
   // Add sorting state
-  const [sorting, setSorting] = useQueryState("sort", {
-    defaultValue: JSON.stringify([{ id: "date", desc: true }]),
-  });
+  const [sorting, setSorting] = useState(
+    JSON.stringify([{ id: "date", desc: true }])
+  );
 
   // Get advanced filters from URL
   const [advancedFilters, setAdvancedFilters] = useQueryState(
@@ -460,7 +460,7 @@ export function CustomTable({}: CustomTableProps) {
       joinOperator,
       offset: Number(pageIndex) * Number(pageSize),
       limit: Number(pageSize),
-      // orderBy: graphqlSorting,
+      orderBy: graphqlSorting,
     },
     onCompleted: (data) => {
       setTasks(data.rdebt_cases);
@@ -494,21 +494,26 @@ export function CustomTable({}: CustomTableProps) {
   // Handle sorting change
   const handleSortingChange = React.useCallback<OnChangeFn<SortingState>>(
     (updaterOrValue) => {
-      // Handle both function updater and direct value
-      const updatedSorting =
-        typeof updaterOrValue === "function"
-          ? updaterOrValue(parsedSorting)
-          : updaterOrValue;
+      const [field, value] = String(updaterOrValue).split("-");
+      // Store the sorting state as a string for URL state
+      // This is important for persistence and URL sharing
+      setSorting(
+        JSON.stringify([
+          {
+            id: field,
+            desc: value === "desc",
+          },
+        ])
+      );
 
-      const sortingString = JSON.stringify(updatedSorting);
-      setSorting(sortingString);
+      // Convert the updated sorting to GraphQL format for the API
+      const newGraphqlSorting = [
+        {
+          [field]: value === "asc" ? "asc" : "desc",
+        },
+      ];
 
-      // Convert new sorting to GraphQL format
-      const newGraphqlSorting = updatedSorting.map((sort) => ({
-        [sort.id]: sort.desc ? "desc" : "asc",
-      }));
-
-      // Refetch with new sorting
+      // Always refetch when sorting changes
       refetch({
         filters:
           joinOperator === "and"
@@ -520,15 +525,7 @@ export function CustomTable({}: CustomTableProps) {
         orderBy: newGraphqlSorting,
       });
     },
-    [
-      setSorting,
-      refetch,
-      joinOperator,
-      pageIndex,
-      pageSize,
-      parsedSorting,
-      advancedFilters,
-    ]
+    [joinOperator, pageIndex, pageSize, advancedFilters]
   );
 
   const columns = React.useMemo(
@@ -537,6 +534,7 @@ export function CustomTable({}: CustomTableProps) {
         setRowAction,
         data: tasks[0],
         onPreview: handlePreview,
+        handleSortingChange,
       }),
     [tasks, handlePreview, setRowAction]
   );
@@ -660,7 +658,7 @@ export function CustomTable({}: CustomTableProps) {
           orderBy: graphqlSorting,
         });
       },
-      onSortingChange: handleSortingChange,
+      // onSortingChange: handleSortingChange,
       onPageSizeChange: handlePageSizeChange,
       onColumnVisibilityChange: (updater: any) => {
         // Handle both function updater and direct value
@@ -680,7 +678,6 @@ export function CustomTable({}: CustomTableProps) {
       data?.rdebt_cases_aggregate?.aggregate?.count,
       refetch,
       handlePageSizeChange,
-      parsedSorting,
       handleSortingChange,
       graphqlSorting,
       columnVisibility,
@@ -808,7 +805,12 @@ export function CustomTable({}: CustomTableProps) {
 
           // Apply sorting if available
           if (viewData.sorting) {
-            setSorting(JSON.stringify(viewData.sorting));
+            // Parse the sorting if it's stored as a string, otherwise use directly
+            const sortingData =
+              typeof viewData.sorting === "string"
+                ? JSON.parse(viewData.sorting)
+                : viewData.sorting;
+            setSorting(sortingData);
           }
         } catch (error) {
           console.error("Error applying view:", error);
@@ -867,7 +869,10 @@ export function CustomTable({}: CustomTableProps) {
   });
 
   // Handle save view from modal
-  const handleSaveView = (viewName: string, columnVisibility: Record<string, boolean>) => {
+  const handleSaveView = (
+    viewName: string,
+    columnVisibility: Record<string, boolean>
+  ) => {
     // Create view data object
     const viewData = {
       ...columnVisibility,
