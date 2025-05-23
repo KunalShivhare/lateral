@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import {
   ColumnOrderState,
   OnChangeFn,
@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
 import * as React from "react";
+import { useState } from "react";
 
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
@@ -28,10 +29,12 @@ import {
   GET_SAVED_FILTERS,
   GET_SAVED_VIEWS,
   GET_TASKS,
+  SAVE_VIEW,
 } from "../_lib/queries";
 import { getCustomColumns } from "./custom-table-columns";
 import { PreviewDialog } from "./preview-dialog";
 import { Button } from "@/components/ui/button";
+import { CreateViewModal } from "./create-view-modal";
 
 interface CustomTableProps {}
 
@@ -770,22 +773,14 @@ export function CustomTable({}: CustomTableProps) {
     refetchSavedViews,
   ]);
 
+  // State for create view modal
+  const [createViewModalOpen, setCreateViewModalOpen] = useState(false);
+
   // Handle create new view
   const handleCreateView = React.useCallback(() => {
-    // Implement create new view functionality
-    // This should open a modal or form to create a new view
-    console.log("Creating new view with current table state");
-    // You could save the current column order, visibility, and filters
-    const viewData = {
-      columnOrder,
-      columnVisibility,
-      filters: advancedFilters,
-      sorting: parsedSorting,
-    };
-    console.log("View data to save:", viewData);
-    // Here you would typically open a modal to name the view
-    // Then save it using a mutation
-  }, [columnOrder, columnVisibility, advancedFilters, parsedSorting]);
+    // Open the create view modal
+    setCreateViewModalOpen(true);
+  }, []);
 
   // Handle select view
   const handleSelectView = React.useCallback(
@@ -859,6 +854,38 @@ export function CustomTable({}: CustomTableProps) {
     ]
   );
 
+  // Add save view mutation
+  const [saveView, { loading: saveViewLoading }] = useMutation(SAVE_VIEW, {
+    onCompleted: (data) => {
+      console.log("View saved successfully:", data);
+      // Refetch saved views to update the list
+      refetchSavedViews();
+    },
+    onError: (error) => {
+      console.error("Error saving view:", error);
+    },
+  });
+
+  // Handle save view from modal
+  const handleSaveView = (viewName: string, columnVisibility: Record<string, boolean>) => {
+    // Create view data object
+    const viewData = {
+      ...columnVisibility,
+      // Include other view settings if needed
+      columnOrder: columnOrder,
+      filters: advancedFilters,
+      sorting: parsedSorting,
+    };
+
+    // Save the view using the mutation
+    saveView({
+      variables: {
+        view_name: viewName,
+        views: viewData,
+      },
+    });
+  };
+
   return (
     <>
       {dataTable}
@@ -866,6 +893,12 @@ export function CustomTable({}: CustomTableProps) {
         isOpen={previewOpen}
         onClose={() => setPreviewOpen(false)}
         caseId={previewCaseId}
+      />
+      <CreateViewModal
+        isOpen={createViewModalOpen}
+        onClose={() => setCreateViewModalOpen(false)}
+        onSave={handleSaveView}
+        tableName="rdebt_cases"
       />
     </>
   );
