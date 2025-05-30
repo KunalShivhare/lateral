@@ -494,19 +494,50 @@ export function CustomTable({}: CustomTableProps) {
   // Handle sorting change
   const handleSortingChange = React.useCallback<OnChangeFn<SortingState>>(
     (updaterOrValue) => {
+      // Extract field and value from the string format
       const [field, value] = String(updaterOrValue).split("-");
-      // Store the sorting state as a string for URL state
-      // This is important for persistence and URL sharing
-      setSorting(
-        JSON.stringify([
-          {
-            id: field,
-            desc: value === "desc",
-          },
-        ])
-      );
 
-      // Convert the updated sorting to GraphQL format for the API
+      if (!field || !value) {
+        console.error("Invalid sorting format:", updaterOrValue);
+        return;
+      }
+
+      if (value === "none") {
+        setSorting(JSON.stringify([]));
+        const newGraphqlSorting = [
+          {
+            ["id"]: "asc",
+          },
+        ];
+        refetch({
+          filters:
+            joinOperator === "and"
+              ? advancedFilters.map(convertFilterToGraphQL).filter(Boolean) ??
+                {}
+              : {},
+          joinOperator,
+          offset: Number(pageIndex) * Number(pageSize),
+          limit: Number(pageSize),
+          orderBy: newGraphqlSorting,
+        });
+        if (tableRef.current) {
+          tableRef.current.setSorting([]);
+        }
+        return;
+      }
+
+      // Create a new sorting state
+      const newSorting = [
+        {
+          id: field,
+          desc: value === "desc",
+        },
+      ];
+
+      // Store the sorting state
+      setSorting(JSON.stringify(newSorting));
+
+      // Convert to GraphQL format for the API
       const newGraphqlSorting = [
         {
           [field]: value === "asc" ? "asc" : "desc",
@@ -524,6 +555,11 @@ export function CustomTable({}: CustomTableProps) {
         limit: Number(pageSize),
         orderBy: newGraphqlSorting,
       });
+
+      // Force update the table's sorting state to match our new state
+      if (tableRef.current) {
+        tableRef.current.setSorting(newSorting);
+      }
     },
     [joinOperator, pageIndex, pageSize, advancedFilters]
   );
@@ -698,6 +734,15 @@ export function CustomTable({}: CustomTableProps) {
       table.setColumnVisibility({});
     }
   }, [table]);
+
+  // Synchronize the table's sorting state with our custom sorting state
+  React.useEffect(() => {
+    if (table && parsedSorting && parsedSorting.length > 0) {
+      console.log("Synchronizing table sorting state with:", parsedSorting);
+      // Update the table's sorting state to match our custom state
+      table.setSorting(parsedSorting);
+    }
+  }, [table, parsedSorting]);
 
   // Memoize the toolbar with proper typing
   const toolbar = React.useMemo(() => {

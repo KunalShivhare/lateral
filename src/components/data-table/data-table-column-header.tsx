@@ -189,20 +189,16 @@ export function DataTableColumnHeader<TData, TValue>({
             : noneValue
         }
         onValueChange={(value) => {
-          handleSortingChange(value);
+          console.log("🚀 ~ value:", value);
+          // Simplified approach - just call our custom handler directly based on the selected value
           if (value === ascValue) {
-            column.toggleSorting(false);
-            // Force table to update sorting state
-            table.setSorting(table.getState().sorting);
+            handleSortingChange && handleSortingChange(`${column.id}-asc`);
           } else if (value === descValue) {
-            column.toggleSorting(true);
-            // Force table to update sorting state
-            table.setSorting(table.getState().sorting);
-          } else if (value === hideValue) column.toggleVisibility(false);
-          else if (value === noneValue) {
-            column.clearSorting();
-            // Force table to update sorting state
-            table.setSorting([]);
+            handleSortingChange && handleSortingChange(`${column.id}-desc`);
+          } else if (value === hideValue) {
+            column.toggleVisibility(false);
+          } else if (value === noneValue) {
+            handleSortingChange && handleSortingChange(`${column.id}-none`);
           }
         }}
       >
@@ -215,32 +211,36 @@ export function DataTableColumnHeader<TData, TValue>({
               : "Not sorted. Click to sort ascending."
           }
           className="h-8 w-fit shadow-none dark:bg-transparent border-none text-xs [&>svg:last-child]:hidden"
-          onClick={() => {
-            if (column.getCanSort()) {
-              // Toggle sorting directly when clicking on the header
-              if (column.getIsSorted() === "asc") {
-                column.toggleSorting(true); // Switch to descending
-              } else if (column.getIsSorted() === "desc") {
-                column.clearSorting(); // Clear sorting
-              } else {
-                column.toggleSorting(false); // Start with ascending
-              }
-              // Force table to update sorting state
-              table.setSorting(table.getState().sorting);
-            }
-          }}
+          // onClick={() => {
+          //   if (column.getCanSort()) {
+          //     // Simplified approach - just call our custom handler directly
+          //     if (column.getIsSorted() === "asc") {
+          //       // Currently ascending, switch to descending
+          //       handleSortingChange && handleSortingChange(`${column.id}-desc`);
+          //     } else if (column.getIsSorted() === "desc") {
+          //       // Currently descending, clear sorting
+          //       handleSortingChange && handleSortingChange(`${column.id}-none`);
+          //     } else {
+          //       // Not sorted, start with ascending
+          //       handleSortingChange && handleSortingChange(`${column.id}-asc`);
+          //     }
+          //   }
+          // }}
         >
           <div className="flex justify-between gap-2">
             <span className="text-xs">{title}</span>
-            <SelectIcon asChild>
-              {column.getCanSort() && column.getIsSorted() === "desc" ? (
-                <ArrowDown className="ml-2.5 size-4" aria-hidden="true" />
-              ) : column.getIsSorted() === "asc" ? (
-                <ArrowUp className="ml-2.5 size-4" aria-hidden="true" />
-              ) : (
-                <ChevronsUpDown className="ml-2.5 size-4" aria-hidden="true" />
-              )}
-            </SelectIcon>
+            {/* Use a more direct approach for icons to ensure they update */}
+            {column.getCanSort() && (
+              <div className="ml-2.5">
+                {column.getIsSorted() === "desc" ? (
+                  <ArrowDown className="size-4" aria-hidden="true" />
+                ) : column.getIsSorted() === "asc" ? (
+                  <ArrowUp className="size-4" aria-hidden="true" />
+                ) : (
+                  <ChevronsUpDown className="size-4" aria-hidden="true" />
+                )}
+              </div>
+            )}
           </div>
         </SelectTrigger>
         <SelectContent align="start">
