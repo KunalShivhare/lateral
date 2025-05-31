@@ -16,6 +16,7 @@ export function CaseHeader({
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [debtorModalOpen, setDebtorModalOpen] = useState(false);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
 
@@ -84,6 +85,46 @@ export function CaseHeader({
             </div>
           </div>
         </BigEmptyModal>
+
+        <BigEmptyModal
+          isOpen={debtorModalOpen}
+          onClose={() => setDebtorModalOpen(false)}
+          title="Edit Debtor Information"
+        >
+          <div className="space-y-6 text-white">
+            <div className="space-y-2">
+              <label htmlFor="debtorName" className="block text-sm font-medium">
+                Debtor Name
+              </label>
+              <input
+                type="text"
+                id="debtorName"
+                defaultValue={debtor?.debtor_name || ''}
+                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter debtor name"
+              />
+            </div>
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={() => setDebtorModalOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  // Handle save logic here
+                  setDebtorModalOpen(false);
+                }}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </BigEmptyModal>
         <div>
           <div className="flex justify-end space-x-2">
             <Badge variant="outline" className="bg-black text-white px-4 py-2">
@@ -97,9 +138,31 @@ export function CaseHeader({
       </div>
       <div className="flex px-3">
         <div className="w-[75%] p-2 mt-4">
-          <h2 className="text-2xl font-semibold text-white">
-            {debtor?.debtor_name}
-          </h2>
+          <div className="flex items-center space-x-2">
+            <h2 className="text-2xl font-semibold text-white">
+              {debtor?.debtor_name}
+            </h2>
+            <button 
+              onClick={() => setDebtorModalOpen(true)}
+              className="text-gray-400 hover:text-white transition-colors"
+              title="Edit debtor information"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+            </button>
+          </div>
           <div className="space-y-1 text-white">
             <div className="flex items-center">
               <span className="inline-block w-6">
