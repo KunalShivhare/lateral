@@ -1,24 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { useTheme } from "../theme-provider";
 
 export function Navbar() {
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState("light");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const themeDropdownRef = useRef<HTMLDivElement>(null);
 
+  const { theme, setTheme } = useTheme();
   // Apply theme function
   const applyTheme = (theme: string) => {
     // Remove all theme classes first
-    document.body.classList.remove("light-theme", "dark-theme", "blue-theme");
+    document.body.classList.remove("light", "dark", "blue");
 
     // Add the selected theme class
-    document.body.classList.add(`${theme}-theme`);
+    document.body.classList.add(theme);
 
     // Update current theme state
-    setCurrentTheme(theme);
+    setTheme(theme as any);
 
     // Close the theme dropdown
     setIsThemeDropdownOpen(false);
@@ -171,9 +172,7 @@ export function Navbar() {
                       <line x1="12" y1="1" x2="12" y2="3"></line>
                       <line x1="12" y1="21" x2="12" y2="23"></line>
                     </svg>
-                    Theme:{" "}
-                    {currentTheme.charAt(0).toUpperCase() +
-                      currentTheme.slice(1)}
+                    Theme: {theme.charAt(0).toUpperCase() + theme.slice(1)}
                   </div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -213,7 +212,7 @@ export function Navbar() {
                         <line x1="12" y1="21" x2="12" y2="23"></line>
                       </svg>{" "}
                       Light
-                      {currentTheme === "light" && (
+                      {theme === "light" && (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -250,7 +249,7 @@ export function Navbar() {
                         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                       </svg>{" "}
                       Dark
-                      {currentTheme === "dark" && (
+                      {theme === "dark" && (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
@@ -287,7 +286,7 @@ export function Navbar() {
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                       </svg>{" "}
                       Blue
-                      {currentTheme === "blue" && (
+                      {theme === "blue" && (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="16"
