@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 import { EmptyDialog } from "./EmptyDialog";
+import { BigEmptyModal } from "@/components/ui/big-empty-modal";
 
 export function CaseHeader({
   debtor,
@@ -14,6 +15,7 @@ export function CaseHeader({
   closeDialog?: () => void;
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [statusModalOpen, setStatusModalOpen] = useState(false);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
 
@@ -39,10 +41,49 @@ export function CaseHeader({
   return (
     <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg ">
       <div className="flex justify-between items-center px-3 pt-4">
-        <div className="flex items-center space-x-2 bg-[#058FFF1A] rounded-lg px-4 py-2">
+        <div
+          className="flex items-center space-x-2 bg-[#058FFF1A] rounded-lg px-4 py-2 cursor-pointer hover:bg-[#058FFF33] transition-colors"
+          onClick={() => setStatusModalOpen(true)}
+        >
           <div className="h-4 w-4 rounded-full bg-[#058FFF]"></div>
           <div className="text-[#058FFF] text-sm">On arrangement</div>
         </div>
+
+        <BigEmptyModal
+          isOpen={statusModalOpen}
+          onClose={() => setStatusModalOpen(false)}
+          title="Case Status"
+        >
+          <div className="space-y-6 text-white">
+            <div className="space-y-2">
+              <h4 className="font-medium">Current Status</h4>
+              <div className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
+                <div className="h-4 w-4 rounded-full bg-[#058FFF]"></div>
+                <span>On arrangement</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-medium">Update Status</h4>
+              <div className="grid gap-2">
+                {["New", "In Progress", "On Hold", "Resolved", "Closed"].map(
+                  (status) => (
+                    <button
+                      key={status}
+                      className="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition-colors"
+                      onClick={() => {
+                        // Handle status update here
+                        setStatusModalOpen(false);
+                      }}
+                    >
+                      {status}
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        </BigEmptyModal>
         <div>
           <div className="flex justify-end space-x-2">
             <Badge variant="outline" className="bg-black text-white px-4 py-2">
