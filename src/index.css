@@ -83,6 +83,7 @@
   --underline: #d9d9d9;
   --tableRowHover: #f5f5f5;
   --iconFill: #273b4a;
+  --iconHover: #f5f5f5;
 }
 
 .dark {
@@ -123,6 +124,7 @@
   --underline: #3f3f3f;
   --tableRowHover: #1a1a1a;
   --iconFill: #bababa;
+  --iconHover: #1a1a1a;
 }
 
 .blue {
@@ -163,6 +165,7 @@
   --underline: #3f3f3f;
   --tableRowHover: #0000004d;
   --iconFill: #bababa;
+  --iconHover: #0000004d;
 }
 
 @theme inline {

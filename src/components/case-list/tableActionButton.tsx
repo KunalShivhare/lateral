@@ -64,7 +64,7 @@ const TableActionButtons = ({
     <div className="flex items-center gap-2 mb-4 border-t border-b border-[var(--border)]">
       {hasSelectedRows && (
         <div>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -79,7 +79,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -121,7 +121,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -141,7 +141,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -157,7 +157,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -173,7 +173,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -193,7 +193,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -209,7 +209,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               fill="var(--iconFill)"
               width="24px"
@@ -229,7 +229,7 @@ const TableActionButtons = ({
               </g>
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -243,7 +243,7 @@ const TableActionButtons = ({
               />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24"
               height="24"
@@ -272,7 +272,7 @@ const TableActionButtons = ({
               <circle cx="12" cy="8" r="5" fill="var(--iconFill)" />
             </svg>
           </button>
-          <button className="p-2 hover:bg-slate-800 rounded">
+          <button className="p-2 hover:bg-[var(--iconHover)] rounded">
             <svg
               width="24px"
               height="24px"
@@ -295,7 +295,7 @@ const TableActionButtons = ({
         </div>
       )}
       <div className="flex items-center ml-auto gap-2">
-        <button className="p-2 hover:bg-slate-800 rounded">
+        <button className="p-2 hover:bg-[var(--iconHover)] rounded">
           <svg
             width="24"
             height="24"
@@ -310,7 +310,7 @@ const TableActionButtons = ({
             />
           </svg>
         </button>
-        <button className="p-2 hover:bg-slate-800 rounded">
+        <button className="p-2 hover:bg-[var(--iconHover)] rounded">
           <svg
             width="24"
             height="24"
@@ -325,7 +325,7 @@ const TableActionButtons = ({
             />
           </svg>
         </button>
-        <button className="p-2 hover:bg-slate-800 rounded">
+        <button className="p-2 hover:bg-[var(--iconHover)] rounded">
           <svg
             width="24"
             height="24"
@@ -343,7 +343,7 @@ const TableActionButtons = ({
         </button>
         <div className="relative" ref={dropdownRef}>
           <button
-            className="p-2 hover:bg-slate-800 rounded"
+            className="p-2 hover:bg-[var(--iconHover)] rounded"
             onClick={() => setShowSettingsDropdown(!showSettingsDropdown)}
           >
             <svg
@@ -367,7 +367,7 @@ const TableActionButtons = ({
               <div className="py-1">
                 <button
                   onClick={handleCreateNewView}
-                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800 flex items-center font-medium"
+                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[var(--outline)] flex items-center font-medium"
                 >
                   <svg
                     className="mr-2"
@@ -400,7 +400,7 @@ const TableActionButtons = ({
                       <button
                         key={view.id}
                         onClick={() => handleSelectView(view.id)}
-                        className="w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-800"
+                        className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[var(--iconHover)]"
                       >
                         {view.view_name}
                       </button>
