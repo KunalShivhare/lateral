@@ -61,7 +61,7 @@ const TableActionButtons = ({
     }
   };
   return (
-    <div className="flex items-center gap-2 mb-4 border-t border-b border-[#595959]">
+    <div className="flex items-center gap-2 mb-4 border-t border-b border-[var(--border)]">
       {hasSelectedRows && (
         <div>
           <button className="p-2 hover:bg-slate-800 rounded">
@@ -376,7 +376,9 @@ const TableActionButtons = ({
               <div className="border-t border-slate-700">
                 <div className="py-1">
                   {viewsLoading ? (
-                    <div className="px-4 py-2 text-sm text-gray-400">Loading views...</div>
+                    <div className="px-4 py-2 text-sm text-gray-400">
+                      Loading views...
+                    </div>
                   ) : savedViews && savedViews.length > 0 ? (
                     savedViews.map((view: SavedView) => (
                       <button
@@ -388,7 +390,9 @@ const TableActionButtons = ({
                       </button>
                     ))
                   ) : (
-                    <div className="px-4 py-2 text-sm text-gray-400">No saved views</div>
+                    <div className="px-4 py-2 text-sm text-gray-400">
+                      No saved views
+                    </div>
                   )}
                 </div>
               </div>

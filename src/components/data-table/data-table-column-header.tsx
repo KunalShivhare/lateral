@@ -210,7 +210,7 @@ export function DataTableColumnHeader<TData, TValue>({
               ? "Sorted ascending. Click to sort descending."
               : "Not sorted. Click to sort ascending."
           }
-          className="h-8 w-fit shadow-none dark:bg-transparent border-none text-xs [&>svg:last-child]:hidden"
+          className="h-8 w-fit shadow-none dark:bg-transparent dark:hover:bg-transparent border-none text-xs [&>svg:last-child]:hidden"
           // onClick={() => {
           //   if (column.getCanSort()) {
           //     // Simplified approach - just call our custom handler directly

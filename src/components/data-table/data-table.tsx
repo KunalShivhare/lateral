@@ -116,7 +116,7 @@ export function DataTable<TData>({
         <Table className="h-full relative">
           <TableHeader className="sticky top-0 bg-background z-20 shadow-sm">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="border-[var(--border)]">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
@@ -159,7 +159,7 @@ export function DataTable<TData>({
                           ? "var(--background)"
                           : undefined,
                       }}
-                      className="group"
+                      className="group hover:bg-[var(--tableRowHover)]"
                     >
                       {header.isPlaceholder
                         ? null
@@ -180,7 +180,7 @@ export function DataTable<TData>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   onClick={(e) => handleRowClick(e, row.original["id"])}
-                  className="data-table-row"
+                  className="data-table-row hover:bg-[var(--tableRowHover)] border-[var(--border)]"
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
@@ -227,7 +227,7 @@ export function DataTable<TData>({
                           backgroundColor: (
                             cell.column.columnDef.meta as ColumnMeta<TData>
                           )?.fixed
-                            ? "#0D2532"
+                            ? "var(--tableFixedBackground)"
                             : undefined,
                         }}
                       >

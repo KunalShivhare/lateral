@@ -47,6 +47,7 @@
 .light {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
+  --tableFixedBackground: #ffffff;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -80,11 +81,13 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   --underline: #d9d9d9;
+  --tableRowHover: #f5f5f5;
 }
 
 .dark {
   --background: #262626;
   --foreground: oklch(0.985 0 0);
+  --tableFixedBackground: #262626;
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
@@ -117,10 +120,12 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
   --underline: #3f3f3f;
+  --tableRowHover: #1a1a1a;
 }
 
 .blue {
   --background: oklch(0.145 0 0);
+  --tableFixedBackground: #0d2532;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -154,6 +159,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
   --underline: #3f3f3f;
+  --tableRowHover: #0000004d;
 }
 
 @theme inline {

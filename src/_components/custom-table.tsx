@@ -98,7 +98,7 @@ const CustomAdvancedToolbar = React.memo(function CustomAdvancedToolbarInner({
             placeholder="Search users and leads"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full border border-[#8C8C8C] rounded py-2 pl-3 pr-10 text-sm"
+            className="w-full border border-[#8C8C8C] rounded py-2 pl-3 pr-10 text-sm text-[#8C8C8C]"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3">
             <svg
