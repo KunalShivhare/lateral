@@ -13,36 +13,46 @@ export function CaseDetails({
   return (
     <div className="w-[100%] flex-shrink-0 overflow-y-auto h-screen">
       <div className="p-4 flex items-center">
-        <h2 className="text-white text-sm font-medium">Case Details</h2>
+        <h2 className="text-[var(--primary-text)] text-sm font-medium">
+          Case Details
+        </h2>
         <button className="text-[#058FFF] text-xs pl-2">Edit</button>
       </div>
 
       <div className="p-4 space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">CV Client Code</span>
-          <span className="text-white text-xs">{caseDetails?.client_id}</span>
+          <span className="text-[var(--primary-text)] text-xs">
+            {caseDetails?.client_id}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Name</span>
-          <span className="text-white text-xs">{debtor?.debtor_name}</span>
+          <span className="text-[var(--primary-text)] text-xs">
+            {debtor?.debtor_name}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Trading Name</span>
-          <span className="text-white text-xs">
+          <span className="text-[var(--primary-text)] text-xs">
             {debtor?.debtor_trading_as}
           </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Account Number</span>
-          <span className="text-white text-xs">{caseDetails?.ref}</span>
+          <span className="text-[var(--primary-text)] text-xs">
+            {caseDetails?.ref}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Client Account Number</span>
-          <span className="text-white text-xs">{caseDetails?.cl_ref}</span>
+          <span className="text-[var(--primary-text)] text-xs">
+            {caseDetails?.cl_ref}
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
@@ -54,7 +64,7 @@ export function CaseDetails({
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Agent Name</span>
-          <span className="text-blue-500 text-xs">
+          <span className="text-[var(--primary-text)] text-xs">
             {caseDetails?.agent_name}
           </span>
         </div>
@@ -66,29 +76,33 @@ export function CaseDetails({
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Date of Assignment</span>
-          <span className="text-white text-xs">Aug 21, 2023</span>
+          <span className="text-[var(--primary-text)] text-xs">
+            Aug 21, 2023
+          </span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">Case Age</span>
-          <span className="text-white text-xs">186 Days</span>
+          <span className="text-[var(--primary-text)] text-xs">186 Days</span>
         </div>
 
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400 text-xs">
             Total Outstanding Balance
           </span>
-          <span className="text-white text-xs">
+          <span className="text-[var(--primary-text)] text-xs">
             ${caseDetails?.d_outstanding}
           </span>
         </div>
       </div>
 
       <button
-        className="flex items-center justify-between w-full p-4 border-y border-slate-800"
+        className="flex items-center justify-between w-full p-4 border-y border-[var(--border)]"
         onClick={() => setOtherInfoExpanded(!otherInfoExpanded)}
       >
-        <span className="text-white font-medium">Other information</span>
+        <span className="text-[var(--primary-text)] font-medium">
+          Other information
+        </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={`h-4 w-4 text-slate-400 transition-transform ${
@@ -108,7 +122,7 @@ export function CaseDetails({
       </button>
 
       {otherInfoExpanded && (
-        <div className="p-4 border-b border-slate-800">
+        <div className="p-4 border-b border-[var(--border)]">
           <p className="text-slate-400 text-sm">
             No other information available
           </p>
@@ -116,10 +130,12 @@ export function CaseDetails({
       )}
 
       <button
-        className="flex items-center justify-between w-full p-4 border-b border-slate-800"
+        className="flex items-center justify-between w-full p-4 border-b border-[var(--border)]"
         onClick={() => setLoremIpsumExpanded(!loremIpsumExpanded)}
       >
-        <span className="text-white font-medium">Lorem Ipsum information</span>
+        <span className="text-[var(--primary-text)] font-medium">
+          Lorem Ipsum information
+        </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={`h-4 w-4 text-slate-400 transition-transform ${
@@ -139,7 +155,7 @@ export function CaseDetails({
       </button>
 
       {loremIpsumExpanded && (
-        <div className="p-4 border-b border-slate-800">
+        <div className="p-4 border-b border-[var(--border)]">
           <p className="text-slate-400 text-sm">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </p>
