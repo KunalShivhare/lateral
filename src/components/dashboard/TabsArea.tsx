@@ -37,7 +37,7 @@ export function TabsArea() {
               key={tab}
               className={`py-4 px-1 relative text-sm font-medium ${
                 activeTab === tab
-                  ? "text-white after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500"
+                  ? "text-[var(--primary-text)] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-blue-500"
                   : "text-[#939292]"
               }`}
               onClick={() => setActiveTab(tab)}
