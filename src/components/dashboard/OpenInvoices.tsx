@@ -45,7 +45,7 @@ const invoices = [
 
 export function OpenInvoices() {
   return (
-    <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg mt-6  overflow-hidden">
+    <div className="bg-[var(--cardBackground)] border-[1px] border-[#3F3F3F] rounded-lg mt-6  overflow-hidden">
       <div className="flex flex-row items-center p-4">
         <div className="flex flex-1  items-center">
           <h3 className="text-white text-base font-medium">Open invoices</h3>

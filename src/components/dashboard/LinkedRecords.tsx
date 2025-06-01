@@ -1,6 +1,6 @@
 export function LinkedRecords() {
   return (
-    <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg mt-6 overflow-hidden p-4">
+    <div className="bg-[var(--cardBackground)] border-[1px] border-[#3F3F3F] rounded-lg mt-6 overflow-hidden p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <h3 className="text-white text-base font-medium">Linked Records</h3>

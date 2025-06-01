@@ -24,7 +24,7 @@ const tasks = [
 
 export function TaskList() {
   return (
-    <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg mt-6 overflow-hidden">
+    <div className="bg-[var(--cardBackground)] border-[1px] border-[#3F3F3F] rounded-lg mt-6 overflow-hidden">
       <div className="flex justify-between items-center p-4">
         <div className="flex items-center space-x-2">
           <h3 className="text-white text-base font-medium">Tasks</h3>

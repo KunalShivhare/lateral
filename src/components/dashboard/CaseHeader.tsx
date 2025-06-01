@@ -40,7 +40,7 @@ export function CaseHeader({
   }, []);
 
   return (
-    <div className="bg-[#090A0BBF] border-[1px] border-[#3F3F3F] rounded-lg ">
+    <div className="bg-[var(--cardBackground)] border-[1px] border-[#3F3F3F] rounded-lg ">
       <div className="flex justify-between items-center px-3 pt-4">
         <div
           className="flex items-center space-x-2 bg-[#058FFF1A] rounded-lg px-4 py-2 cursor-pointer hover:bg-[#058FFF33] transition-colors"
@@ -99,7 +99,7 @@ export function CaseHeader({
               <input
                 type="text"
                 id="debtorName"
-                defaultValue={debtor?.debtor_name || ''}
+                defaultValue={debtor?.debtor_name || ""}
                 className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter debtor name"
               />
@@ -142,7 +142,7 @@ export function CaseHeader({
             <h2 className="text-2xl font-semibold text-white">
               {debtor?.debtor_name}
             </h2>
-            <button 
+            <button
               onClick={() => setDebtorModalOpen(true)}
               className="text-gray-400 hover:text-white transition-colors"
               title="Edit debtor information"
