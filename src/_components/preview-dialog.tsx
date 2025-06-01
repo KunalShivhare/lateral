@@ -70,12 +70,11 @@ export function PreviewDialog({ isOpen, onClose, caseId }: PreviewDialogProps) {
   return (
     <div
       className={cn(
-        "fixed top-0 right-0 h-full flex flex-col transition-all duration-300 z-50 border-l border-[#3F3F3F] shadow-xl",
+        "fixed top-0 right-0 h-full bg-[var(--background)] flex flex-col transition-all duration-300 z-50 border-l border-[var(--border)] shadow-xl",
         "w-[40%] translate-x-0 px-8"
       )}
       style={{
         transition: "transform 0.3s ease-out, width 0.3s ease-out",
-        backgroundColor: "#1a1a1a", // Solid dark background instead of blur
       }}
     >
       {loading ? (
@@ -118,7 +117,7 @@ export function PreviewDialog({ isOpen, onClose, caseId }: PreviewDialogProps) {
             </div>
           </div>
           {/* Fixed View Record button at the bottom */}
-          <div className="sticky bottom-0 w-full p-4 bg-[#1a1a1a] border-t border-[#3F3F3F] flex justify-center">
+          <div className="sticky bottom-0 w-full p-4 bg-[var(--background)] border-t border-[var(--border)] flex justify-center">
             <button
               onClick={() => navigate(`/dashboard/${caseId}`)}
               className="px-6 py-2 bg-[#058FFF] text-white rounded-md hover:bg-[#0470cc] transition-colors font-medium flex items-center justify-center"
