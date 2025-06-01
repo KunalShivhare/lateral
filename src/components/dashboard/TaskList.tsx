@@ -24,11 +24,15 @@ const tasks = [
 
 export function TaskList() {
   return (
-    <div className="bg-[var(--cardBackground)] border-[1px] border-[#3F3F3F] rounded-lg mt-6 overflow-hidden">
+    <div className="bg-[var(--cardBackground)] border-[1px] border-[var(--border)] rounded-lg mt-6 overflow-hidden">
       <div className="flex justify-between items-center p-4">
         <div className="flex items-center space-x-2">
-          <h3 className="text-white text-base font-medium">Tasks</h3>
-          <div className="text-[#8C8C8C] rounded-full px-2 text-base">10</div>
+          <h3 className="text-[var(--primary-text)] text-base font-medium">
+            Tasks
+          </h3>
+          <div className="text-[var(--primary-text)] rounded-full px-2 text-base">
+            10
+          </div>
         </div>
         <button className="text-[#058FFF] flex items-center text-xs">
           <svg
@@ -108,10 +112,12 @@ export function TaskList() {
                   </div>
                 )}
               </div>
-              <p className="text-slate-300 text-sm">{task.text}</p>
+              <p className="text-[var(--primary-text)] text-sm">{task.text}</p>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-slate-500 text-xs">{task.date}</span>
+              <span className="text-[var(--primary-text)] text-xs">
+                {task.date}
+              </span>
               {task.user && (
                 <div className="h-6 w-6 rounded-full bg-teal-500 flex items-center justify-center text-xs text-white">
                   {task.user}
