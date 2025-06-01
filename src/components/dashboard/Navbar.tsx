@@ -145,15 +145,15 @@ export function Navbar() {
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-              <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+            <div className="absolute right-0 mt-2 w-48 bg-[var(--background)] rounded-md shadow-lg py-1 z-10">
+              <div className="px-4 py-2 text-sm text-[var(--primary-text)] border-b border-[var(--border)]">
                 <p className="font-medium">User Profile</p>
                 <p className="text-xs text-gray-500">user@example.com</p>
               </div>
 
               <div className="relative" ref={themeDropdownRef}>
                 <button
-                  className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="flex items-center justify-between w-full px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)]"
                   onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
                 >
                   <div className="flex items-center">
@@ -191,9 +191,9 @@ export function Navbar() {
                 </button>
 
                 {isThemeDropdownOpen && (
-                  <div className="absolute right-0 top-full w-36 bg-white rounded-md shadow-lg py-1 z-20 mt-1">
+                  <div className="absolute right-0 top-full w-36 bg-[var(--background)] rounded-md shadow-lg py-1 z-20 mt-1">
                     <button
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center w-full px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)]"
                       onClick={() => applyTheme("light")}
                     >
                       <svg
@@ -232,7 +232,7 @@ export function Navbar() {
                     </button>
 
                     <button
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center w-full px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)]"
                       onClick={() => applyTheme("dark")}
                     >
                       <svg
@@ -269,7 +269,7 @@ export function Navbar() {
                     </button>
 
                     <button
-                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center w-full px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)]"
                       onClick={() => applyTheme("blue")}
                     >
                       <svg
@@ -308,11 +308,11 @@ export function Navbar() {
                 )}
               </div>
 
-              <button className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              <button className="w-full text-left px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)]">
                 Settings
               </button>
 
-              <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+              <button className="w-full text-left px-4 py-2 text-sm text-red-300 hover:bg-[var(--iconHover)]">
                 Sign out
               </button>
             </div>
