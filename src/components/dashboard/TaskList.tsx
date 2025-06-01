@@ -53,7 +53,7 @@ export function TaskList() {
         </button>
       </div>
 
-      <div className="divide-y divide-slate-800">
+      <div className="divide-y divide-[var(--underline)]">
         {tasks.map((task) => (
           <div key={task.id} className="p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
