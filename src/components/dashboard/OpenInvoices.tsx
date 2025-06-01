@@ -45,11 +45,13 @@ const invoices = [
 
 export function OpenInvoices() {
   return (
-    <div className="bg-[var(--cardBackground)] border-[1px] border-[#3F3F3F] rounded-lg mt-6  overflow-hidden">
+    <div className="bg-[var(--cardBackground)] border-[1px] border-[var(--border)] rounded-lg mt-6  overflow-hidden">
       <div className="flex flex-row items-center p-4">
         <div className="flex flex-1  items-center">
-          <h3 className="text-white text-base font-medium">Open invoices</h3>
-          <span className="text-[#939292] text-base pl-4 ">8</span>
+          <h3 className="text-[var(--primary-text)] text-base font-medium">
+            Open invoices
+          </h3>
+          <span className="text-[var(--primary-text)] text-base pl-4 ">8</span>
         </div>
         <button className="text-[#058FFF] flex items-center text-xs">
           <svg
@@ -74,33 +76,33 @@ export function OpenInvoices() {
         <table className="w-full text-left">
           <thead className="">
             <tr>
-              <th className="p-3 text-xs font-medium text-[#939292]">
+              <th className="p-3 text-xs font-medium text-[var(--primary-text)]">
                 Description
               </th>
-              <th className="p-3 text-xs font-medium text-[#939292] text-center">
+              <th className="p-3 text-xs font-medium text-[var(--primary-text)] text-center">
                 Invoice #
               </th>
-              <th className="p-3 text-xs font-medium text-[#939292] text-center">
+              <th className="p-3 text-xs font-medium text-[var(--primary-text)] text-center">
                 Due date
               </th>
-              <th className="p-3 text-xs font-medium text-[#939292] text-center">
+              <th className="p-3 text-xs font-medium text-[var(--primary-text)] text-center">
                 Interest
               </th>
             </tr>
           </thead>
           <tbody className="">
             {invoices.map((invoice) => (
-              <tr key={invoice.id} className="hover:bg-slate-800/40">
-                <td className="p-3 text-sm text-slate-300">
+              <tr key={invoice.id} className="hover:bg-[var(--border)]">
+                <td className="p-3 text-sm text-[var(--primary-text)]">
                   {invoice.description}
                 </td>
-                <td className="p-3 text-sm text-blue-500 text-center">
+                <td className="p-3 text-sm text-[var(--primary-text)] text-center">
                   {invoice.invoiceNumber}
                 </td>
-                <td className="p-3 text-sm text-slate-300 text-center">
+                <td className="p-3 text-sm text-[var(--primary-text)] text-center">
                   {invoice.dueDate}
                 </td>
-                <td className="p-3 text-sm text-slate-300 text-center">
+                <td className="p-3 text-sm text-[var(--primary-text)] text-center">
                   {invoice.interest}
                 </td>
               </tr>
