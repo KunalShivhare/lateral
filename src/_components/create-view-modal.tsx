@@ -33,13 +33,21 @@ export function CreateViewModal({
   // Update available columns when data is loaded
   useEffect(() => {
     if (data?.__type?.fields) {
-      const columns = data.__type.fields.map((field: { name: string }) => field.name);
-      setAvailableColumns(columns.filter(col => !selectedColumns.includes(col)));
+      const columns = data.__type.fields.map(
+        (field: { name: string }) => field.name
+      );
+      setAvailableColumns(
+        columns.filter((col) => !selectedColumns.includes(col))
+      );
     }
   }, [data, selectedColumns]);
 
   // Handle drag start
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, item: string, source: 'available' | 'selected') => {
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    item: string,
+    source: "available" | "selected"
+  ) => {
     setDraggedItem(item);
     e.dataTransfer.setData("text/plain", JSON.stringify({ item, source }));
   };
@@ -53,12 +61,12 @@ export function CreateViewModal({
   const handleDropToAvailable = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-    
-    if (data.source === 'selected' && data.item) {
-      setSelectedColumns(prev => prev.filter(col => col !== data.item));
-      setAvailableColumns(prev => [...prev, data.item]);
+
+    if (data.source === "selected" && data.item) {
+      setSelectedColumns((prev) => prev.filter((col) => col !== data.item));
+      setAvailableColumns((prev) => [...prev, data.item]);
     }
-    
+
     setDraggedItem(null);
   };
 
@@ -66,12 +74,12 @@ export function CreateViewModal({
   const handleDropToSelected = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-    
-    if (data.source === 'available' && data.item) {
-      setAvailableColumns(prev => prev.filter(col => col !== data.item));
-      setSelectedColumns(prev => [...prev, data.item]);
+
+    if (data.source === "available" && data.item) {
+      setAvailableColumns((prev) => prev.filter((col) => col !== data.item));
+      setSelectedColumns((prev) => [...prev, data.item]);
     }
-    
+
     setDraggedItem(null);
   };
 
@@ -84,19 +92,19 @@ export function CreateViewModal({
 
     // Create column visibility object where selected columns are true
     const columnVisibility: Record<string, boolean> = {};
-    
+
     // Set all available columns to false
-    availableColumns.forEach(col => {
+    availableColumns.forEach((col) => {
       columnVisibility[col] = false;
     });
-    
+
     // Set all selected columns to true
-    selectedColumns.forEach(col => {
+    selectedColumns.forEach((col) => {
       columnVisibility[col] = true;
     });
-    
+
     onSave(viewName, columnVisibility);
-    
+
     // Reset state
     setViewName("");
     setSelectedColumns([]);
@@ -105,30 +113,42 @@ export function CreateViewModal({
 
   // Handle moving a column from available to selected
   const handleMoveToSelected = (column: string) => {
-    setAvailableColumns(prev => prev.filter(col => col !== column));
-    setSelectedColumns(prev => [...prev, column]);
+    setAvailableColumns((prev) => prev.filter((col) => col !== column));
+    setSelectedColumns((prev) => [...prev, column]);
   };
 
   // Handle moving a column from selected to available
   const handleMoveToAvailable = (column: string) => {
-    setSelectedColumns(prev => prev.filter(col => col !== column));
-    setAvailableColumns(prev => [...prev, column]);
+    setSelectedColumns((prev) => prev.filter((col) => col !== column));
+    setAvailableColumns((prev) => [...prev, column]);
+  };
+
+  const handleAllMoveToSelected = () => {
+    setAvailableColumns((prev) => []);
+    setSelectedColumns((prev) => [...prev, ...availableColumns]);
+  };
+
+  const handleAllMoveToAvailable = () => {
+    setSelectedColumns((prev) => []);
+    setAvailableColumns((prev) => [...prev, ...selectedColumns]);
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-slate-900 rounded-lg p-6 w-[800px] max-h-[80vh] overflow-auto">
+      <div className="bg-[var(--background)] rounded-lg p-6 w-[800px] max-h-[80vh] overflow-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-white">Create Result View</h2>
+          <h2 className="text-xl font-semibold text-[var(--primary-text)]">
+            Create Result View
+          </h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-[var(--ring)] mb-2">
             Result Name:
           </label>
           <Input
@@ -140,35 +160,35 @@ export function CreateViewModal({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Available Fields:
+        <div className="flex flex-row gap-4">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-[var(--ring)] mb-2">
+              Selected Fields:
             </label>
-            <div 
-              className="border border-gray-700 rounded-md h-[300px] overflow-y-auto p-2 bg-slate-800"
+            <div
+              className="border border-[var(--border)] rounded-md h-[300px] overflow-y-auto p-2 bg-[var(--background)]"
               onDragOver={handleDragOver}
-              onDrop={handleDropToAvailable}
+              onDrop={handleDropToSelected}
             >
-              {loading ? (
-                <p className="text-gray-400 text-center mt-4">Loading fields...</p>
-              ) : error ? (
-                <p className="text-red-400 text-center mt-4">Error loading fields</p>
-              ) : availableColumns.length === 0 ? (
-                <p className="text-gray-400 text-center mt-4">No available fields</p>
+              {selectedColumns.length === 0 ? (
+                <p className="text-gray-400 text-center mt-4">
+                  Drag fields here to select them
+                </p>
               ) : (
-                availableColumns.map((column) => (
+                selectedColumns.map((column) => (
                   <div
                     key={column}
-                    className="p-2 mb-1 bg-slate-700 rounded-md cursor-move flex justify-between items-center"
+                    className="p-2 mb-1 bg-[var(--background)] border-[var(--border)] rounded-md cursor-move flex justify-between items-center"
                     draggable
-                    onDragStart={(e) => handleDragStart(e, column, 'available')}
+                    onDragStart={(e) => handleDragStart(e, column, "selected")}
                   >
-                    <span>{column}</span>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => handleMoveToSelected(column)}
+                    <span className="text-[var(--primary-text)] text-sm">
+                      {column}
+                    </span>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => handleMoveToAvailable(column)}
                       className="h-6 w-6 p-0"
                     >
                       →
@@ -179,30 +199,61 @@ export function CreateViewModal({
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Selected Fields:
-            </label>
-            <div 
-              className="border border-gray-700 rounded-md h-[300px] overflow-y-auto p-2 bg-slate-800"
-              onDragOver={handleDragOver}
-              onDrop={handleDropToSelected}
+          <div className="flex flex-col justify-center">
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => handleAllMoveToSelected()}
+              className="h-6 w-6 p-0"
             >
-              {selectedColumns.length === 0 ? (
-                <p className="text-gray-400 text-center mt-4">Drag fields here to select them</p>
+              ←
+            </Button>
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => handleAllMoveToAvailable()}
+              className="h-6 w-6 p-0"
+            >
+              →
+            </Button>
+          </div>
+
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-[var(--ring)] mb-2">
+              Available Fields:
+            </label>
+            <div
+              className="border border-[var(--border)] rounded-md h-[300px] overflow-y-auto p-2 bg-[var(--background)]"
+              onDragOver={handleDragOver}
+              onDrop={handleDropToAvailable}
+            >
+              {loading ? (
+                <p className="text-gray-400 text-center mt-4">
+                  Loading fields...
+                </p>
+              ) : error ? (
+                <p className="text-red-400 text-center mt-4">
+                  Error loading fields
+                </p>
+              ) : availableColumns.length === 0 ? (
+                <p className="text-gray-400 text-center mt-4">
+                  No available fields
+                </p>
               ) : (
-                selectedColumns.map((column) => (
+                availableColumns.map((column) => (
                   <div
                     key={column}
-                    className="p-2 mb-1 bg-slate-700 rounded-md cursor-move flex justify-between items-center"
+                    className="p-2 mb-1 bg-[var(--background)] border-[var(--border)] rounded-md cursor-move flex justify-between items-center"
                     draggable
-                    onDragStart={(e) => handleDragStart(e, column, 'selected')}
+                    onDragStart={(e) => handleDragStart(e, column, "available")}
                   >
-                    <span>{column}</span>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => handleMoveToAvailable(column)}
+                    <span className="text-[var(--primary-text)] text-sm">
+                      {column}
+                    </span>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={() => handleMoveToSelected(column)}
                       className="h-6 w-6 p-0"
                     >
                       ←
@@ -215,10 +266,10 @@ export function CreateViewModal({
         </div>
 
         <div className="mt-6 flex justify-end">
-          <Button variant="outline" onClick={onClose} className="mr-2">
+          <Button variant="outline" onClick={onClose} className="mr-2 ">
             Cancel
           </Button>
-          <Button onClick={handleSave}>
+          <Button variant="default" onClick={handleSave}>
             Submit Result view
           </Button>
         </div>

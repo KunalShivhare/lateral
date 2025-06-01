@@ -363,11 +363,11 @@ const TableActionButtons = ({
           </button>
 
           {showSettingsDropdown && (
-            <div className="absolute right-0 mt-2 w-56 bg-slate-900 rounded-md shadow-lg z-50 border border-slate-700">
+            <div className="absolute right-0 mt-2 w-56 bg-[var(--background)] rounded-md shadow-lg z-50 border border-[var(--border)]">
               <div className="py-1">
                 <button
                   onClick={handleCreateNewView}
-                  className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[var(--outline)] flex items-center font-medium"
+                  className="w-full text-left px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)] flex items-center font-medium"
                 >
                   <svg
                     className="mr-2"
@@ -389,7 +389,7 @@ const TableActionButtons = ({
                 </button>
               </div>
 
-              <div className="border-t border-slate-700">
+              <div className="border-t border-[var(--border)]">
                 <div className="py-1">
                   {viewsLoading ? (
                     <div className="px-4 py-2 text-sm text-gray-400">
@@ -400,7 +400,7 @@ const TableActionButtons = ({
                       <button
                         key={view.id}
                         onClick={() => handleSelectView(view.id)}
-                        className="w-full text-left px-4 py-2 text-sm text-white hover:bg-[var(--iconHover)]"
+                        className="w-full text-left px-4 py-2 text-sm text-[var(--primary-text)] hover:bg-[var(--iconHover)]"
                       >
                         {view.view_name}
                       </button>
