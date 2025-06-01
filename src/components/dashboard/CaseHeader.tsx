@@ -57,7 +57,9 @@ export function CaseHeader({
         >
           <div className="space-y-6 text-white">
             <div className="space-y-2">
-              <h4 className="font-medium">Current Status</h4>
+              <h4 className="font-medium text-[var(--primary-text)]">
+                Current Status
+              </h4>
               <div className="flex items-center space-x-2 p-3 bg-gray-800 rounded-lg">
                 <div className="h-4 w-4 rounded-full bg-[#058FFF]"></div>
                 <span>On arrangement</span>
@@ -65,13 +67,15 @@ export function CaseHeader({
             </div>
 
             <div className="space-y-2">
-              <h4 className="font-medium">Update Status</h4>
-              <div className="grid gap-2">
+              <h4 className="font-medium text-[var(--primary-text)]">
+                Update Status
+              </h4>
+              <div className="grid gap-2 bg-[var(--background)]">
                 {["New", "In Progress", "On Hold", "Resolved", "Closed"].map(
                   (status) => (
                     <button
                       key={status}
-                      className="w-full text-left p-3 hover:bg-gray-800 rounded-lg transition-colors"
+                      className="w-full text-left text-[var(--primary-text)] p-3 hover:bg-[var(--iconHover)] rounded-lg transition-colors"
                       onClick={() => {
                         // Handle status update here
                         setStatusModalOpen(false);
@@ -93,14 +97,17 @@ export function CaseHeader({
         >
           <div className="space-y-6 text-white">
             <div className="space-y-2">
-              <label htmlFor="debtorName" className="block text-sm font-medium">
+              <label
+                htmlFor="debtorName"
+                className="block text-sm font-medium text-[var(--primary-text)]"
+              >
                 Debtor Name
               </label>
               <input
                 type="text"
                 id="debtorName"
                 defaultValue={debtor?.debtor_name || ""}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-md text-[var(--primary-text)] focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter debtor name"
               />
             </div>
@@ -108,7 +115,7 @@ export function CaseHeader({
               <button
                 type="button"
                 onClick={() => setDebtorModalOpen(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white"
+                className="px-4 py-2 text-sm font-medium text-[var(--primary-text)]"
               >
                 Cancel
               </button>

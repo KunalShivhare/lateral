@@ -23,20 +23,22 @@ export function BigEmptyModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         className={cn(
-          "p-0 max-w-4xl w-full h-[80vh] flex flex-col overflow-hidden bg-gray-950",
+          "p-0 max-w-4xl w-full h-[80vh] flex flex-col overflow-hidden bg-[var(--background)]",
           className
         )}
       >
         {/* Header Strip */}
-        <div className="bg-gray-900 px-6 py-4 border-b border-gray-800">
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <div className="bg-[var(--background)] px-6 py-4 border-b border-[var(--border)]">
+          <h3 className="text-lg font-semibold text-[var(--primary-text)]">
+            {title}
+          </h3>
         </div>
 
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-3xl mx-auto w-full">
             {children || (
-              <div className="h-full flex items-center justify-center text-gray-500">
+              <div className="h-full flex items-center justify-center text-[var(--primary-text)]">
                 No content available
               </div>
             )}
