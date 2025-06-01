@@ -103,13 +103,15 @@ export function DataTable<TData>({
       </div>
 
       {/* Render TableActionButtons only when rows are selected */}
-      {<TableActionButtons 
-        hasSelectedRows={hasSelectedRows}
-        savedViews={savedViews}
-        viewsLoading={viewsLoading}
-        onCreateView={onCreateView}
-        onSelectView={onSelectView}
-      />}
+      {
+        <TableActionButtons
+          hasSelectedRows={hasSelectedRows}
+          savedViews={savedViews}
+          viewsLoading={viewsLoading}
+          onCreateView={onCreateView}
+          onSelectView={onSelectView}
+        />
+      }
       <div className="overflow-hidden rounded-md h-[calc(100vh-280px)] flex flex-col relative">
         <Table className="h-full relative">
           <TableHeader className="sticky top-0 bg-background z-20 shadow-sm">

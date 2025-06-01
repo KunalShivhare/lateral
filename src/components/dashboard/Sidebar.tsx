@@ -41,13 +41,13 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "h-full bg-[#0000004D] flex flex-col transition-all duration-300 relative",
+        "h-full bg-[var(--sidebar-background)] flex flex-col transition-all duration-300 relative",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-6 bg-[#1a1e23] border border-[#3F3F3F] justify-center items-center rounded-full p-2 hover:bg-[#1A1A1A] transition-colors z-10"
+        className="absolute -right-3 top-6 bg-[var(--sidebar)] border-[1px] border-[#3F3F3F] justify-center items-center rounded-full p-2  transition-colors z-10"
       >
         {isCollapsed ? (
           <svg
@@ -90,10 +90,10 @@ export function Sidebar() {
 
       <div className="flex-1 flex flex-col overflow-auto px-2">
         {!isCollapsed && (
-          <div className="flex pt-2 border-b border-[#3F3F3F]">
+          <div className="flex pt-2 border-b border-[var(--underline)]">
             <button
               className={cn(
-                "flex-1 relative text-xs font-normal text-white pb-4"
+                "flex-1 relative text-xs font-normal text-[var(--primary-text)] pb-4"
               )}
               onClick={() => handleTabChange("saved")}
             >
@@ -104,7 +104,7 @@ export function Sidebar() {
             </button>
             <button
               className={cn(
-                "flex-1 relative text-xs font-normal text-gray-400 pb-4"
+                "flex-1 relative text-xs font-normal text-[#929292] pb-4"
               )}
               onClick={() => handleTabChange("new")}
             >
@@ -124,7 +124,7 @@ export function Sidebar() {
                   <a
                     href="#"
                     className={cn(
-                      "block px-6 py-2 text-xs text-white font-normal hover:bg-[#12171b]",
+                      "block px-6 py-2 text-xs text-[var(--primary-text)] font-normal hover:bg-[#12171b]",
                       isCollapsed && "flex justify-center py-4"
                     )}
                     title={isCollapsed ? item.title : undefined}
@@ -141,10 +141,10 @@ export function Sidebar() {
 
             {!isCollapsed && (
               <>
-                <div className="h-px bg-[#2a3036] mx-0 my-4"></div>
+                <div className="h-px bg-[var(--underline)] mx-0 my-4"></div>
 
                 <div className="px-6 py-2">
-                  <h3 className="text-sm font-normal text-white">
+                  <h3 className="text-sm font-normal text-[var(--primary-text)]">
                     My Saved Lists
                   </h3>
                 </div>
@@ -155,7 +155,7 @@ export function Sidebar() {
                       <a
                         href="#"
                         className={cn(
-                          "block px-6 py-2 text-xs text-white font-normal hover:bg-[#12171b]",
+                          "block px-6 py-2 text-xs text-[var(--primary-text)] font-normal hover:bg-[#12171b]",
                           isCollapsed && "flex justify-center py-4"
                         )}
                         title={isCollapsed ? item.title : undefined}

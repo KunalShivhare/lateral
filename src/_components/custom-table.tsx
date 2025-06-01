@@ -883,11 +883,7 @@ export function CustomTable({}: CustomTableProps) {
           viewsLoading={viewsLoading}
           onCreateView={handleCreateView}
           onSelectView={handleSelectView}
-        >
-          {/* <div className="flex justify-end">
-          <ModeToggle />
-          </div> */}
-        </DataTable>
+        ></DataTable>
       </>
     ),
     [
