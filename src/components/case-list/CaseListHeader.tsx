@@ -18,7 +18,9 @@ export function CaseListHeader() {
             />
           </svg>
         </button> */}
-        <h2 className="text-xl font-semibold">Records</h2>
+        <h2 className="text-xl font-semibold text-[var(--primary-text)]">
+          Records
+        </h2>
       </div>
       <div className="ml-auto">
         <a href="#" className="text-blue-500 text-sm">

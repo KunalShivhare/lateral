@@ -124,7 +124,7 @@ export function Sidebar() {
                   <a
                     href="#"
                     className={cn(
-                      "block px-6 py-2 text-xs text-[var(--primary-text)] font-normal hover:bg-[#12171b]",
+                      "block px-6 py-2 text-xs text-[var(--primary-text)] font-normal hover:bg-[var(--underline)]",
                       isCollapsed && "flex justify-center py-4"
                     )}
                     title={isCollapsed ? item.title : undefined}
@@ -155,7 +155,7 @@ export function Sidebar() {
                       <a
                         href="#"
                         className={cn(
-                          "block px-6 py-2 text-xs text-[var(--primary-text)] font-normal hover:bg-[#12171b]",
+                          "block px-6 py-2 text-xs text-[var(--primary-text)] font-normal hover:bg-[var(--underline)]",
                           isCollapsed && "flex justify-center py-4"
                         )}
                         title={isCollapsed ? item.title : undefined}
