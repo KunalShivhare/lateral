@@ -129,7 +129,7 @@ export function CaseHeader({
             </h2>
             <button
               onClick={() => setDebtorModalOpen(true)}
-              className="text-[var(--primary-text)] hover:text-white transition-colors"
+              className="text-[var(--primary-text)] transition-colors"
               title="Edit debtor information"
             >
               <svg

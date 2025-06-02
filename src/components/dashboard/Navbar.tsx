@@ -145,7 +145,7 @@ export function Navbar() {
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-[var(--background)] rounded-md shadow-lg py-1 z-10">
+            <div className="absolute right-0 mt-2 w-48 bg-[var(--background)] rounded-md shadow-lg py-1 z-100">
               <div className="px-4 py-2 text-sm text-[var(--primary-text)] border-b border-[var(--border)]">
                 <p className="font-medium">User Profile</p>
                 <p className="text-xs text-gray-500">user@example.com</p>
