@@ -98,7 +98,7 @@ const getData = (
             <div className="flex items-center space-x-2">
               <span className="truncate font-medium">{row.getValue(key)}</span>
               <span
-                className="ml-2 pl-2 text-xs text-blue-500 hover:text-blue-700 hover:underline cursor-pointer opacity-0 row-hover:opacity-100 transition-opacity duration-200"
+                className="ml-2 pl-2 text-xs text-blue-500 font-bold hover:text-blue-700 hover:underline cursor-pointer opacity-0 row-hover:opacity-100 transition-opacity duration-200"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (row.original && typeof onPreview === "function") {

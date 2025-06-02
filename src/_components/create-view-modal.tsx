@@ -23,6 +23,7 @@ export function CreateViewModal({
   const [availableColumns, setAvailableColumns] = useState<string[]>([]);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch table schema
   const { data, loading, error } = useQuery(GET_TABLE_SCHEMA, {
@@ -159,6 +160,23 @@ export function CreateViewModal({
             className="w-full"
           />
         </div>
+        <div className="flex flex-row gap-16">
+          <Input
+            type="text"
+            placeholder="Search fields..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full mb-2 opacity-0"
+          />
+
+          <Input
+            type="text"
+            placeholder="Search fields..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full mb-2"
+          />
+        </div>
 
         <div className="flex flex-row gap-4">
           <div className="flex-1">
@@ -219,9 +237,12 @@ export function CreateViewModal({
           </div>
 
           <div className="flex-1">
-            <label className="block text-sm font-medium text-[var(--ring)] mb-2">
-              Available Fields:
-            </label>
+            <div className="mb-2">
+              <label className="block text-sm font-medium text-[var(--ring)] mb-1">
+                Available Fields:
+              </label>
+            </div>
+
             <div
               className="border border-[var(--border)] rounded-md h-[300px] overflow-y-auto p-2 bg-[var(--background)]"
               onDragOver={handleDragOver}
@@ -240,26 +261,32 @@ export function CreateViewModal({
                   No available fields
                 </p>
               ) : (
-                availableColumns.map((column) => (
-                  <div
-                    key={column}
-                    className="p-2 mb-1 bg-[var(--background)] border-[var(--border)] rounded-md cursor-move flex justify-between items-center"
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, column, "available")}
-                  >
-                    <span className="text-[var(--primary-text)] text-sm">
-                      {column}
-                    </span>
-                    <Button
-                      variant="link"
-                      size="sm"
-                      onClick={() => handleMoveToSelected(column)}
-                      className="h-6 w-6 p-0"
+                availableColumns
+                  .filter((column) =>
+                    column.toLowerCase().includes(searchTerm.toLowerCase())
+                  )
+                  .map((column) => (
+                    <div
+                      key={column}
+                      className="p-2 mb-1 bg-[var(--background)] border-[var(--border)] rounded-md cursor-move flex justify-between items-center"
+                      draggable
+                      onDragStart={(e) =>
+                        handleDragStart(e, column, "available")
+                      }
                     >
-                      ←
-                    </Button>
-                  </div>
-                ))
+                      <span className="text-[var(--primary-text)] text-sm">
+                        {column}
+                      </span>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        onClick={() => handleMoveToSelected(column)}
+                        className="h-6 w-6 p-0"
+                      >
+                        ←
+                      </Button>
+                    </div>
+                  ))
               )}
             </div>
           </div>
