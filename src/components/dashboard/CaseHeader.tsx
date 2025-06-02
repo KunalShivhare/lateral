@@ -65,28 +65,6 @@ export function CaseHeader({
                 <span>On arrangement</span>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <h4 className="font-medium text-[var(--primary-text)]">
-                Update Status
-              </h4>
-              <div className="grid gap-2 bg-[var(--background)]">
-                {["New", "In Progress", "On Hold", "Resolved", "Closed"].map(
-                  (status) => (
-                    <button
-                      key={status}
-                      className="w-full text-left text-[var(--primary-text)] p-3 hover:bg-[var(--iconHover)] rounded-lg transition-colors"
-                      onClick={() => {
-                        // Handle status update here
-                        setStatusModalOpen(false);
-                      }}
-                    >
-                      {status}
-                    </button>
-                  )
-                )}
-              </div>
-            </div>
           </div>
         </BigEmptyModal>
 

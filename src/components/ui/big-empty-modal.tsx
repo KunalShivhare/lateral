@@ -23,7 +23,7 @@ export function BigEmptyModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         className={cn(
-          "p-0 max-w-4xl w-full h-[80vh] flex flex-col overflow-hidden bg-[var(--background)]",
+          "p-0 w-[90vw] min-w-[1200px] h-[80vh] flex flex-col overflow-hidden bg-[var(--background)]",
           className
         )}
       >
@@ -36,7 +36,7 @@ export function BigEmptyModal({
 
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-3xl mx-auto w-full">
+          <div className="w-full max-w-none px-4">
             {children || (
               <div className="h-full flex items-center justify-center text-[var(--primary-text)]">
                 No content available
