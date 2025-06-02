@@ -42,12 +42,12 @@ export function Sidebar() {
     <div
       className={cn(
         "h-full bg-[var(--sidebar-background)] flex flex-col transition-all duration-300 relative",
-        isCollapsed ? "w-16" : "w-64"
+        isCollapsed ? "w-8" : "w-64"
       )}
     >
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-6 bg-[var(--sidebar)] border-[1px] border-[#3F3F3F] justify-center items-center rounded-full p-2  transition-colors z-10"
+        className={`absolute -right-3 top-6 bg-[var(--sidebar)] border-[1px] border-[#3F3F3F] justify-center items-center rounded-full p-2 transition-colors z-10 `}
       >
         {isCollapsed ? (
           <svg
@@ -56,6 +56,9 @@ export function Sidebar() {
             viewBox="0 0 18 15"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            style={{
+              transform: "rotate(180deg)",
+            }}
           >
             <path
               d="M10.0096 8.86152L16.9341 14.2501C17.3705 14.5901 18 14.2756 18 13.7189L18 12.2485C18 12.0445 17.9035 11.849 17.744 11.7216L12.7122 7.80759C12.3723 7.54411 12.3723 7.0214 12.7122 6.75367L17.744 2.84396C17.9035 2.71647 18 2.52523 18 2.317L18 0.833854C18 0.285645 17.3747 -0.0288314 16.9466 0.306893L10.0096 5.704L8.68343 6.76217C8.3519 7.02565 8.3519 7.53986 8.68343 7.80334L10.0096 8.86152Z"
@@ -130,7 +133,7 @@ export function Sidebar() {
                     title={isCollapsed ? item.title : undefined}
                   >
                     {isCollapsed ? (
-                      <span className="text-lg">🔍</span>
+                      <span className="text-lg"></span>
                     ) : (
                       item.title
                     )}
@@ -161,7 +164,7 @@ export function Sidebar() {
                         title={isCollapsed ? item.title : undefined}
                       >
                         {isCollapsed ? (
-                          <span className="text-lg">📋</span>
+                          <span className="text-lg"></span>
                         ) : (
                           item.title
                         )}
